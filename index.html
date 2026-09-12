@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNP3 Terminology & Reference Platform</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --panel:#121b2e;
+    --panel2:#0f1729;
+    --accent:#3ddc97;
+    --accent2:#4f8cff;
+    --text:#e6ecf5;
+    --muted:#8a9bb8;
+    --border:#223252;
+    --danger:#ff6b6b;
+    --warn:#ffb84f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Roboto, Arial, sans-serif;
+    background:radial-gradient(1200px 600px at 20% -10%, #16213d, var(--bg));
+    color:var(--text);
+    min-height:100vh;
+  }
+  header{
+    padding:28px 32px 18px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header .brand{display:flex;align-items:center;gap:14px;}
+  header .brand .logo{
+    width:44px;height:44px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#04120c;font-size:14px;
+  }
+  header h1{margin:0;font-size:20px;letter-spacing:.3px;}
+  header p{margin:2px 0 0;color:var(--muted);font-size:13px;}
+  nav{
+    display:flex;gap:6px;flex-wrap:wrap;
+    padding:14px 32px;
+    background:var(--panel2);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:10;
+  }
+  nav button{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:9px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13.5px;
+    transition:.15s;
+  }
+  nav button:hover{border-color:var(--accent2);color:var(--text);}
+  nav button.active{
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#04121c;font-weight:700;border-color:transparent;
+  }
+  main{padding:26px 32px 60px;max-width:1200px;margin:0 auto;}
+  section{display:none;animation:fade .25s ease;}
+  section.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+    margin-bottom:20px;
+  }
+  .card h2{margin-top:0;font-size:18px;display:flex;align-items:center;gap:8px;}
+  .card h2 .tag{
+    font-size:11px;background:var(--panel2);border:1px solid var(--border);
+    padding:2px 8px;border-radius:20px;color:var(--muted);font-weight:400;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:800px){.grid2{grid-template-columns:1fr;}}
+
+  .searchbar{
+    display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;
+  }
+  .searchbar input, .searchbar select{
+    flex:1;min-width:180px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:11px 14px;
+    border-radius:9px;
+    font-size:14px;
+  }
+  .searchbar input:focus, .searchbar select:focus{outline:2px solid var(--accent2);}
+
+  .term{
+    border:1px solid var(--border);
+    background:var(--panel2);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+  .term .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .term h3{margin:0;font-size:15px;color:var(--accent);}
+  .term .cat{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:12px;}
+  .term p{margin:8px 0 0;font-size:13.5px;color:#c7d2e6;line-height:1.55;}
+  .term .example{
+    margin-top:8px;padding:9px 12px;background:rgba(79,140,255,.07);
+    border-left:3px solid var(--accent2);border-radius:6px;
+    font-size:13px;color:#aebedb;
+  }
+  .term .example b{color:var(--accent2);}
+  .count{color:var(--muted);font-size:12.5px;margin-bottom:14px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;}
+  th{color:var(--accent2);font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+  tr:hover td{background:rgba(79,140,255,.05);}
+  code{background:var(--panel2);border:1px solid var(--border);padding:2px 6px;border-radius:6px;color:var(--warn);font-size:12.5px;}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge.req{background:rgba(61,220,151,.15);color:var(--accent);}
+  .badge.resp{background:rgba(79,140,255,.15);color:var(--accent2);}
+  .badge.crit{background:rgba(255,107,107,.15);color:var(--danger);}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+  @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);}}
+  .stat{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center;}
+  .stat .num{font-size:20px;font-weight:800;color:var(--accent);}
+  .stat .lbl{font-size:11.5px;color:var(--muted);margin-top:4px;}
+
+  /* Frame builder */
+  .builder{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:850px){.builder{grid-template-columns:1fr;}}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px;}
+  .field select, .field input{
+    width:100%;background:var(--panel2);border:1px solid var(--border);
+    color:var(--text);padding:9px 11px;border-radius:8px;font-size:13.5px;
+  }
+  .btn{
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#04121c;border:none;padding:11px 20px;border-radius:9px;
+    font-weight:700;cursor:pointer;font-size:14px;margin-top:6px;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .output{
+    background:#050b17;border:1px solid var(--border);border-radius:10px;
+    padding:14px;font-family:'Consolas','Courier New',monospace;font-size:12.5px;
+    color:#8ef7c8;min-height:120px;white-space:pre-wrap;word-break:break-all;
+    line-height:1.7;
+  }
+  .bytefield{
+    display:inline-block;background:var(--panel2);border:1px solid var(--border);
+    padding:3px 7px;border-radius:5px;margin:2px;color:var(--warn);
+  }
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:11.5px;color:var(--muted);}
+  .legend span{display:flex;align-items:center;gap:5px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+  .note{
+    background:rgba(255,184,79,.08);border:1px solid rgba(255,184,79,.35);
+    color:#ffd9a0;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:18px;
+  }
+  .scenario{
+    background:var(--panel2);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;margin-bottom:12px;
+  }
+  .scenario h4{margin:0 0 6px;font-size:14px;color:var(--accent2);}
+  .scenario p{margin:0;font-size:13.5px;color:#c7d2e6;line-height:1.55;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);}
+
+  /* ---- Visuals ---- */
+  .viz-caption{color:var(--muted);font-size:13px;margin:-6px 0 16px;}
+
+  .stack{display:flex;flex-direction:column;gap:8px;}
+  .stack .layer{
+    border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .stack .layer .name{font-weight:700;font-size:14px;min-width:150px;}
+  .stack .layer .desc{color:#c7d2e6;font-size:13px;flex:1;min-width:220px;}
+  .stack .l1{background:rgba(61,220,151,.10);border-color:rgba(61,220,151,.35);}
+  .stack .l1 .name{color:var(--accent);}
+  .stack .l2{background:rgba(79,140,255,.10);border-color:rgba(79,140,255,.35);}
+  .stack .l2 .name{color:var(--accent2);}
+  .stack .l3{background:rgba(255,184,79,.10);border-color:rgba(255,184,79,.35);}
+  .stack .l3 .name{color:var(--warn);}
+  .stack .l4{background:rgba(192,132,252,.10);border-color:rgba(192,132,252,.35);}
+  .stack .l4 .name{color:#c084fc;}
+
+  .frame-diagram{display:flex;flex-wrap:wrap;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+  .frame-diagram .seg{
+    padding:14px 6px;text-align:center;font-size:11.5px;color:#04121c;font-weight:700;
+    display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:54px;
+  }
+  .frame-diagram .seg small{font-weight:600;font-size:10px;color:#0b1220;opacity:.75;}
+  .fd-start{background:var(--accent2);flex:2;}
+  .fd-len{background:var(--warn);flex:1;}
+  .fd-ctrl{background:var(--accent);flex:1;}
+  .fd-addr{background:#c084fc;flex:2;}
+  .fd-crc{background:#ff8fa3;flex:1;}
+  .fd-data{background:#3a4a6b;color:var(--text)!important;flex:5;}
+  .fd-data small{color:#c7d2e6!important;opacity:1;}
+
+  .barchart{display:flex;flex-direction:column;gap:14px;}
+  .barrow{display:grid;grid-template-columns:110px 1fr 90px;align-items:center;gap:10px;}
+  .barrow .barlabel{font-size:13px;color:var(--text);font-weight:600;}
+  .barrow .bartrack{background:var(--panel2);border:1px solid var(--border);border-radius:8px;height:22px;overflow:hidden;}
+  .barrow .barfill{height:100%;border-radius:8px 0 0 8px;display:flex;align-items:center;}
+  .barrow .barval{font-size:12.5px;color:var(--muted);text-align:right;}
+
+  .donut-wrap{display:flex;gap:30px;align-items:center;flex-wrap:wrap;}
+  .donut{
+    width:180px;height:180px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(
+      var(--accent2) 0% 35%,
+      var(--accent) 35% 53%,
+      var(--warn) 53% 71%,
+      #c084fc 71% 88%,
+      #ff8fa3 88% 100%
+    );
+  }
+  .donut .hole{width:96px;height:96px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;flex-direction:column;}
+  .donut .hole b{font-size:20px;color:var(--text);}
+  .donut .hole span{font-size:10.5px;color:var(--muted);}
+  .donut-legend{display:flex;flex-direction:column;gap:9px;font-size:13px;}
+  .donut-legend .li{display:flex;align-items:center;gap:8px;}
+  .donut-legend .sw{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+  .timeline{position:relative;padding:30px 10px 10px;}
+  .timeline .line{position:absolute;left:10px;right:10px;top:50px;height:3px;background:var(--border);border-radius:3px;}
+  .timeline .points{display:flex;justify-content:space-between;position:relative;}
+  .timeline .pt{flex:1;text-align:center;position:relative;padding:0 6px;}
+  .timeline .pt .dot{
+    width:16px;height:16px;border-radius:50%;background:var(--accent2);
+    border:3px solid var(--panel);margin:42px auto 10px;position:relative;z-index:2;
+  }
+  .timeline .pt .yr{font-weight:800;color:var(--accent);font-size:14px;}
+  .timeline .pt .desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+  .seq{width:100%;height:auto;}
+
+  .icon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media(max-width:850px){.icon-grid{grid-template-columns:repeat(2,1fr);}}
+  .icon-card{
+    background:var(--panel2);border:1px solid var(--border);border-radius:12px;
+    padding:16px;text-align:center;
+  }
+  .icon-card svg{width:64px;height:64px;margin-bottom:8px;}
+  .icon-card .iname{font-weight:700;font-size:13px;color:var(--accent2);}
+  .icon-card .idesc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+  .capture{
+    background:#050b17;border:1px solid var(--border);border-radius:10px;
+    padding:16px;font-family:'Consolas','Courier New',monospace;font-size:12px;overflow-x:auto;
+  }
+  .capture table{width:100%;font-size:12px;}
+  .capture th{color:var(--accent2);border-bottom:1px solid var(--border);}
+  .capture td{border-bottom:1px solid #182338;color:#c7d2e6;}
+  .capture .hx{color:var(--warn);font-weight:700;}
+  .capture .fieldname{color:var(--accent);}
+
+  .cmp-table th{color:var(--accent2);}
+  .cmp-table td.yes{color:var(--accent);font-weight:700;}
+  .cmp-table td.no{color:var(--danger);font-weight:700;}
+  .cmp-table td.partial{color:var(--warn);font-weight:700;}
+
+  .cmpbar-wrap{display:flex;flex-direction:column;gap:12px;}
+  .cmprow{display:grid;grid-template-columns:130px 1fr 70px;align-items:center;gap:10px;}
+  .cmprow .cmplabel{font-size:13px;font-weight:600;}
+  .cmprow .cmptrack{background:var(--panel2);border:1px solid var(--border);border-radius:8px;height:20px;}
+  .cmprow .cmpfill{height:100%;border-radius:8px 0 0 8px;}
+  .cmprow .cmpval{font-size:12.5px;color:var(--muted);text-align:right;}
+
+  .topo-caption{font-size:12px;color:var(--muted);text-align:center;margin-top:6px;}
+
+  /* ---- Live animated dashboard ---- */
+  .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px;}
+  @media(max-width:850px){.dash-grid{grid-template-columns:1fr;}}
+  .dash-panel{
+    background:var(--panel2);border:1px solid var(--border);border-radius:12px;
+    padding:18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .led-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 0;}
+  .led{
+    width:46px;height:46px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #6dffb8, #16a866);
+    box-shadow:0 0 18px 4px rgba(61,220,151,.55);
+    transition:background .3s, box-shadow .3s;
+  }
+  .led.tripped{
+    background:radial-gradient(circle at 35% 30%, #ff9d9d, #d13636);
+    box-shadow:0 0 18px 4px rgba(255,107,107,.6);
+    animation:ledpulse 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes ledpulse{from{filter:brightness(1);}to{filter:brightness(1.4);}}
+  .led-label{font-size:13px;font-weight:700;color:var(--text);}
+
+  .gauge{width:100%;max-width:220px;}
+  .gauge-val{font-size:22px;font-weight:800;color:var(--accent2);margin-top:4px;}
+  .gauge-label{font-size:11.5px;color:var(--muted);}
+
+  .counter-val{
+    font-family:'Consolas','Courier New',monospace;font-size:28px;font-weight:800;
+    color:var(--warn);margin-top:24px;letter-spacing:1px;
+  }
+  .counter-label{font-size:11.5px;color:var(--muted);}
+
+  .livechart-wrap{
+    background:#050b17;border:1px solid var(--border);border-radius:10px;
+    padding:14px;margin-bottom:16px;
+  }
+  #liveChart{width:100%;height:160px;display:block;}
+
+  .eventlog{
+    background:#050b17;border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;font-family:'Consolas','Courier New',monospace;font-size:12px;
+    color:#8ef7c8;height:150px;overflow-y:auto;display:flex;flex-direction:column-reverse;
+  }
+  .eventlog .ev{padding:3px 0;border-bottom:1px dashed #182338;opacity:0;animation:fadein .4s forwards;}
+  @keyframes fadein{to{opacity:1;}}
+  .eventlog .ev.alarm{color:var(--danger);font-weight:700;}
+  .eventlog .ev.ok{color:var(--accent);}
+  .eventlog .ev.info{color:var(--accent2);}
+
+  .pulse-wrap{position:relative;display:flex;align-items:center;justify-content:space-between;padding:20px 40px;}
+  .pulse-node{width:70px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#04121c;z-index:2;}
+  .pulse-track{position:absolute;left:90px;right:90px;top:50%;height:3px;background:var(--border);transform:translateY(-50%);border-radius:3px;}
+  .pulse-dot{
+    position:absolute;top:50%;width:12px;height:12px;border-radius:50%;
+    background:var(--accent2);transform:translateY(-50%);
+    animation:pulsemove 2.2s linear infinite;
+    box-shadow:0 0 8px 2px rgba(79,140,255,.7);
+  }
+  @keyframes pulsemove{
+    0%{left:90px;opacity:0;}
+    8%{opacity:1;}
+    48%{left:calc(100% - 100px);opacity:1;}
+    52%{opacity:0;}
+    53%{left:calc(100% - 100px);opacity:0;}
+    56%{opacity:1;background:var(--accent);box-shadow:0 0 8px 2px rgba(61,220,151,.7);}
+    92%{left:90px;opacity:1;background:var(--accent);box-shadow:0 0 8px 2px rgba(61,220,151,.7);}
+    100%{left:90px;opacity:0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">D3</div>
+    <div>
+      <h1>DNP3 Terminology & Reference Platform</h1>
+      <p>Distributed Network Protocol 3 (IEEE 1815) — glossary, real-world examples, and standard values</p>
+    </div>
+  </div>
+  <div style="color:var(--muted);font-size:12px;text-align:right;">
+    IEEE 1815-2012 reference tool<br>Client-side / educational
+  </div>
+</header>
+
+<nav id="nav">
+  <button data-tab="why" class="active">❓ Why DNP3</button>
+  <button data-tab="how">🔧 How It Works</button>
+  <button data-tab="visuals">📊 Visuals</button>
+  <button data-tab="live">🎬 Live Demo</button>
+  <button data-tab="compare">🌐 Protocol Comparison</button>
+  <button data-tab="glossary">📘 Glossary</button>
+  <button data-tab="functions">⚙️ Function Codes</button>
+  <button data-tab="objects">🗂️ Object Groups</button>
+  <button data-tab="standards">📏 Standard Values</button>
+  <button data-tab="scenarios">🏭 Real-World Scenarios</button>
+  <button data-tab="builder">🧩 Frame Builder</button>
+</nav>
+
+<main>
+
+<div class="note">
+  ℹ️ This tool is an <strong>educational reference and frame simulator</strong> built entirely in your browser (HTML/CSS/JS). It cannot open real network sockets or serial ports, so it will not perform live DNP3 communication with an actual RTU, meter, or relay. Real DNP3 communication requires a certified stack such as OpenDNP3, Triangle MicroWorks SCM, or a vendor RTU/SCADA driver, running with proper network access and change-control review in an operational technology (OT) environment.
+</div>
+
+<!-- WHY DNP3 -->
+<section id="why" class="active">
+  <div class="card">
+    <h2>Why DNP3 Needed To Exist</h2>
+    <p>In the 1980s and early 1990s, every electric, water, and gas utility that wanted to monitor equipment from a control room had to buy a SCADA master and remote terminal units from the same vendor, because every manufacturer used its own private, undocumented protocol. That created three very real, very expensive problems, described below in plain language.</p>
+
+    <div class="scenario">
+      <h4>Problem 1: Nothing could talk to anything else</h4>
+      <p>If a utility bought RTUs from one manufacturer and later wanted to switch SCADA software vendors, or add a different manufacturer's RTU to the same network, the two systems simply could not understand each other. A utility could end up locked into a single vendor for decades, paying whatever that vendor charged, because switching meant replacing every single field device.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Problem 2: The physical links were slow, noisy, and unreliable</h4>
+      <p>Utilities typically connect substations, well sites, and pump stations using low-bandwidth serial radio or leased telephone lines that stretch across remote, weather-exposed terrain. A protocol built for a clean office Ethernet network would constantly fail on a scratchy 9600-baud radio link with random bit errors. DNP3 was built from the ground up with a CRC checksum on nearly every chunk of data, and with confirmations and retries, specifically to survive that kind of noisy, unreliable environment.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Problem 3: Operators needed to know exactly when something happened, not just that it happened</h4>
+      <p>When a breaker trips during a storm, an operator investigating the fault afterward needs to know the precise sequence and timing of events across many devices, not just their final state. Older, simpler protocols mostly just reported current values when asked. DNP3 was designed around time-stamped event reporting and unsolicited responses, so a remote device can immediately push out "this changed, and here's exactly when" the moment it happens.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>The real solution: one open, public, vendor-neutral standard</h4>
+      <p>In 1993, GE-Harris Canada (then called Westronic) took the partly-finished IEC 60870-5 specification, extended it to cover North American utility requirements, and released the result, DNP3, into the public domain for free instead of keeping it proprietary. Any manufacturer could implement it without paying a license fee, which is exactly why it spread rapidly across electric, water, and oil & gas utilities throughout the 1990s. The DNP Users Group was formed to maintain the specification, and in 2010 it was formally adopted as an international standard, IEEE 1815, with the current edition being IEEE 1815-2012.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Why it still needs updates today: cybersecurity</h4>
+      <p>DNP3 was designed in an era when the field devices it talked to were physically isolated on private serial links, so nobody designed in authentication — any message that looked correctly formatted was simply trusted and acted on. As utilities connected these same networks to corporate IT and the internet over the following decades, security researchers and real-world incidents showed that an attacker who could reach an outstation on the network could send it a forged Operate command and it would just execute it. That is the concrete, documented reason IEEE 1815-2012 added DNP3 Secure Authentication (SAv5), which requires a real cryptographic handshake before a critical command is accepted.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="card">
+    <h2>How DNP3 Actually Works, Step By Step</h2>
+    <p>Here is the real communication cycle, in the order it actually happens, using a substation breaker as the running example.</p>
+
+    <div class="scenario">
+      <h4>Step 1 — The master asks a question</h4>
+      <p>The SCADA master at the control center sends a request, most often a Read (Function Code 1), addressed to one specific outstation using its 16-bit link address. On a modern system this travels as a DNP3 frame wrapped inside a TCP packet aimed at port 20000; on an older system it travels as raw bytes over a serial radio channel at, commonly, 9600 or 19200 bits per second.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 2 — The message is wrapped in three layers</h4>
+      <p>Before that request leaves the master, it passes through three real protocol layers, each adding its own wrapper: first the Application Layer builds the actual request (which object group, which points, which function code); then the Transport Function splits it into segments if it's too big for one frame; then the Data Link Layer wraps each segment in a frame starting with the fixed bytes <code>0x05 0x64</code>, followed by a length byte, a control byte, the destination and source addresses, and a CRC checksum.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 3 — The outstation checks the frame and only then reads it</h4>
+      <p>The outstation checks the incoming frame's CRC first. If even one bit was corrupted by radio interference, the CRC won't match, the frame is silently discarded, and the master's timeout logic will trigger a retry. If the CRC is good, the outstation strips off the data link and transport wrappers and hands the actual application-layer request — "read Binary Input point 3" — to its internal database.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 4 — The outstation answers with real data and its own health flags</h4>
+      <p>The outstation builds a Response (Function Code 129) containing the requested object — say, Binary Input Group 1, point 3, value "closed" — and sends it back wrapped in the same three layers. Every single response, whether anyone asked for it or not, also silently carries a 16-bit Internal Indications (IIN) field reporting the device's own health, such as whether it just rebooted or its event buffer is full.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 5 — Sometimes the outstation speaks first</h4>
+      <p>The polling cycle above repeats continuously, often every few seconds for high-priority points, but DNP3 also lets the outstation interrupt that cycle. If a breaker trips right now, the outstation doesn't wait to be asked — it immediately sends an Unsolicited Response (Function Code 130) to the master, which is why real control-room alarms can appear within a second or two of the event instead of waiting for the next scheduled poll.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 6 — Controlling something adds an extra safety step</h4>
+      <p>When the master needs to actually change something, like closing that breaker back in, high-consequence commands typically use two messages instead of one: a Select (Function Code 3) that asks the outstation to validate the command without executing it, immediately followed by an Operate (Function Code 4) that actually executes it. This two-step Select-Before-Operate sequence exists as a real, deliberate safety mechanism so a single garbled or malicious message can't directly energize equipment.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 7 — Everyone's clock has to agree</h4>
+      <p>Because events from many different devices need to be compared and put in the correct order afterward, the master periodically sends a Write (Function Code 2) request carrying a Time and Date object to correct clock drift in each outstation, keeping every device's sense of "when" consistent across the whole system.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>Step 8 — Periodically, everything is double-checked from scratch</h4>
+      <p>Because individual polls and events can theoretically be missed, the master also runs a full Class 0 integrity poll on a regular schedule, commonly every 5 to 60 minutes, which asks for the complete current value of every single point on the device. This isn't about catching a specific problem — it's a scheduled reset that guarantees the master's database can never drift too far from reality for too long.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VISUALS -->
+<section id="visuals">
+
+  <div class="card">
+    <h2>DNP3 History Timeline</h2>
+    <p class="viz-caption">Four real milestones from proprietary origin to the current security-hardened standard.</p>
+    <div class="timeline">
+      <div class="line"></div>
+      <div class="points">
+        <div class="pt"><div class="dot"></div><div class="yr">1993</div><div class="desc">GE-Harris (Westronic) extends IEC 60870-5 and releases DNP3 into the public domain, free for any vendor to implement.</div></div>
+        <div class="pt"><div class="dot"></div><div class="yr">1990s</div><div class="desc">The DNP Users Group is formed to maintain the spec; adoption spreads rapidly across North American electric, water, and gas utilities.</div></div>
+        <div class="pt"><div class="dot"></div><div class="yr">2010</div><div class="desc">DNP3 is formally ratified as an international standard: IEEE 1815-2010.</div></div>
+        <div class="pt"><div class="dot"></div><div class="yr">2012</div><div class="desc">IEEE 1815-2012 is published, adding DNP3 Secure Authentication (SAv5) for cryptographic command verification.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Protocol Stack</h2>
+    <p class="viz-caption">The four real layers a DNP3 message passes through, top (built first) to bottom (sent last).</p>
+    <div class="stack">
+      <div class="layer l1"><div class="name">Application Layer</div><div class="desc">Builds the actual request/response: function code, object group, variation, point indices.</div></div>
+      <div class="layer l2"><div class="name">Transport Function</div><div class="desc">Splits large fragments into segments and reassembles them on the receiving end.</div></div>
+      <div class="layer l3"><div class="name">Data Link Layer</div><div class="desc">Wraps each segment in a frame: start bytes, length, control byte, addresses, CRC.</div></div>
+      <div class="layer l4"><div class="name">Physical Layer</div><div class="desc">The actual wire: serial RS-232/RS-485 radio or leased line, or TCP/IP on port 20000.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Data Link Frame Byte Layout</h2>
+    <p class="viz-caption">Proportional view of a real DNP3 frame's fixed 10-byte header plus its user data portion (up to 282 bytes, split into 16-byte blocks each with its own CRC).</p>
+    <div class="frame-diagram">
+      <div class="seg fd-start">05 64<small>Start (2B)</small></div>
+      <div class="seg fd-len">LEN<small>Length (1B)</small></div>
+      <div class="seg fd-ctrl">CTRL<small>Control (1B)</small></div>
+      <div class="seg fd-addr">DEST/SRC<small>Addresses (4B)</small></div>
+      <div class="seg fd-crc">CRC<small>Header CRC (2B)</small></div>
+      <div class="seg fd-data">USER DATA<small>Up to 282 bytes, in 16-byte blocks + CRC each</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Master ⇄ Outstation Message Sequence</h2>
+    <p class="viz-caption">A real polling exchange, followed by an event the outstation reports on its own.</p>
+    <svg class="seq" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+      <line x1="120" y1="30" x2="120" y2="280" stroke="#223252" stroke-width="2"/>
+      <line x1="640" y1="30" x2="640" y2="280" stroke="#223252" stroke-width="2"/>
+      <rect x="40" y="6" width="160" height="30" rx="8" fill="#4f8cff"/>
+      <text x="120" y="26" text-anchor="middle" fill="#04121c" font-size="13" font-weight="700">SCADA Master</text>
+      <rect x="560" y="6" width="160" height="30" rx="8" fill="#3ddc97"/>
+      <text x="640" y="26" text-anchor="middle" fill="#04121c" font-size="13" font-weight="700">Outstation (RTU)</text>
+
+      <line x1="120" y1="70" x2="636" y2="70" stroke="#ffb84f" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="380" y="62" text-anchor="middle" fill="#ffb84f" font-size="12.5">Read Request (Function Code 1) — "what is breaker CB-102's status?"</text>
+
+      <line x1="640" y1="105" x2="124" y2="105" stroke="#3ddc97" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="380" y="97" text-anchor="middle" fill="#3ddc97" font-size="12.5">Response (Function Code 129) — "Binary Input 3 = Closed" + IIN health flags</text>
+
+      <line x1="120" y1="150" x2="636" y2="150" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="380" y="142" text-anchor="middle" fill="#c084fc" font-size="12.5">Select (FC 3) — propose closing CB-102</text>
+
+      <line x1="640" y1="180" x2="124" y2="180" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="380" y="172" text-anchor="middle" fill="#c084fc" font-size="12.5">Response — selection accepted, ready to operate</text>
+
+      <line x1="120" y1="210" x2="636" y2="210" stroke="#ff8fa3" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="380" y="202" text-anchor="middle" fill="#ff8fa3" font-size="12.5">Operate (FC 4) — execute the close command</text>
+
+      <line x1="640" y1="255" x2="124" y2="255" stroke="#4f8cff" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+      <text x="380" y="247" text-anchor="middle" fill="#4f8cff" font-size="12.5">Later, unprompted: Unsolicited Response (FC 130) — "CB-102 just tripped!"</text>
+
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L9,3 z" fill="context-stroke"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Typical Polling Interval by Event Class</h2>
+      <p class="viz-caption">Real-world default configuration pattern (bar length shown on a log scale so both ends stay readable).</p>
+      <div class="barchart">
+        <div class="barrow"><div class="barlabel">Class 1</div><div class="bartrack"><div class="barfill" style="width:14%;background:var(--danger);"></div></div><div class="barval">~2 sec</div></div>
+        <div class="barrow"><div class="barlabel">Class 2</div><div class="bartrack"><div class="barfill" style="width:30%;background:var(--warn);"></div></div><div class="barval">~10 sec</div></div>
+        <div class="barrow"><div class="barlabel">Class 3</div><div class="bartrack"><div class="barfill" style="width:42%;background:var(--accent2);"></div></div><div class="barval">~30 sec</div></div>
+        <div class="barrow"><div class="barlabel">Class 0 (Integrity)</div><div class="bartrack"><div class="barfill" style="width:100%;background:var(--accent);"></div></div><div class="barval">~30 min</div></div>
+      </div>
+      <p class="viz-caption" style="margin-top:14px;margin-bottom:0;">These intervals aren't fixed by the standard itself — they're common defaults seen across real utility SCADA configurations, tuned so urgent alarms are seen almost instantly while the full database is still refreshed regularly.</p>
+    </div>
+
+    <div class="card">
+      <h2>Function Codes Referenced in This Platform, by Category</h2>
+      <p class="viz-caption">Based on the 17 function codes documented in the Function Codes tab of this tool.</p>
+      <div class="donut-wrap">
+        <div class="donut"><div class="hole"><b>17</b><span>codes shown</span></div></div>
+        <div class="donut-legend">
+          <div class="li"><span class="sw" style="background:var(--accent2)"></span>Control ops (Select/Operate/Freeze) — 6</div>
+          <div class="li"><span class="sw" style="background:var(--accent)"></span>Restart / diagnostic — 3</div>
+          <div class="li"><span class="sw" style="background:var(--warn)"></span>Configuration (class/unsolicited) — 3</div>
+          <div class="li"><span class="sw" style="background:#c084fc"></span>Confirm / Response — 3</div>
+          <div class="li"><span class="sw" style="background:#ff8fa3"></span>Read / Write — 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Field Equipment — Illustrated</h2>
+    <p class="viz-caption">Original line-art illustrations (not stock photos, so they stay reliable and license-free inside this downloadable file) representing the real hardware DNP3 runs on.</p>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100"><rect x="20" y="15" width="60" height="70" rx="4" fill="none" stroke="#4f8cff" stroke-width="4"/><rect x="30" y="25" width="40" height="14" rx="2" fill="#4f8cff"/><circle cx="38" cy="55" r="5" fill="#3ddc97"/><circle cx="62" cy="55" r="5" fill="#ff8fa3"/><line x1="30" y1="70" x2="70" y2="70" stroke="#8a9bb8" stroke-width="3"/><line x1="30" y1="76" x2="70" y2="76" stroke="#8a9bb8" stroke-width="3"/></svg>
+        <div class="iname">RTU Cabinet</div>
+        <div class="idesc">Remote Terminal Unit — the outstation hardware inside a substation or pump station that speaks DNP3.</div>
+      </div>
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100"><line x1="50" y1="10" x2="50" y2="35" stroke="#ffb84f" stroke-width="4"/><rect x="30" y="35" width="40" height="8" fill="#ffb84f"/><line x1="35" y1="43" x2="35" y2="60" stroke="#ffb84f" stroke-width="4"/><line x1="65" y1="43" x2="65" y2="60" stroke="#ffb84f" stroke-width="4"/><rect x="42" y="60" width="16" height="30" rx="2" fill="none" stroke="#ffb84f" stroke-width="4"/></svg>
+        <div class="iname">Radio / Antenna</div>
+        <div class="idesc">Serial radio link connecting remote sites to the master over 9600–38400 bps channels.</div>
+      </div>
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100"><rect x="15" y="30" width="30" height="45" rx="3" fill="none" stroke="#3ddc97" stroke-width="4"/><rect x="55" y="30" width="30" height="45" rx="3" fill="none" stroke="#3ddc97" stroke-width="4"/><line x1="45" y1="45" x2="55" y2="45" stroke="#3ddc97" stroke-width="4"/><circle cx="30" cy="55" r="4" fill="#3ddc97"/><circle cx="70" cy="55" r="4" fill="#3ddc97"/><rect x="20" y="75" width="15" height="8" fill="#3ddc97"/><rect x="65" y="75" width="15" height="8" fill="#3ddc97"/></svg>
+        <div class="iname">Breaker / Switch</div>
+        <div class="idesc">The controllable Binary Output (Group 12 / CROB) that DNP3 selects and operates to open or close a circuit.</div>
+      </div>
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="#c084fc" stroke-width="4"/><line x1="50" y1="50" x2="50" y2="26" stroke="#c084fc" stroke-width="3"/><line x1="50" y1="50" x2="68" y2="62" stroke="#c084fc" stroke-width="3"/><circle cx="50" cy="50" r="3" fill="#c084fc"/></svg>
+        <div class="iname">Analog Meter</div>
+        <div class="idesc">The physical sensor behind an Analog Input (Group 30) — voltage, flow, level, or temperature.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Topology: Control Center to Field Sites</h2>
+    <p class="viz-caption">A realistic multi-drop layout: one master, several outstations sharing a link, one on its own dedicated TCP connection.</p>
+    <svg class="seq" viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+      <rect x="300" y="20" width="160" height="46" rx="10" fill="#4f8cff"/>
+      <text x="380" y="48" text-anchor="middle" fill="#04121c" font-size="13" font-weight="700">Control Center (Master)</text>
+
+      <line x1="380" y1="66" x2="150" y2="150" stroke="#223252" stroke-width="2"/>
+      <line x1="380" y1="66" x2="380" y2="150" stroke="#223252" stroke-width="2"/>
+      <line x1="380" y1="66" x2="610" y2="150" stroke="#223252" stroke-width="2"/>
+      <text x="260" y="105" fill="var(--muted)" font-size="11" transform="rotate(-18 260 105)">Serial radio, multi-drop, 9600 bps</text>
+      <text x="470" y="105" fill="var(--muted)" font-size="11" transform="rotate(18 470 105)">DNP3 over TCP, port 20000</text>
+
+      <rect x="80" y="150" width="140" height="42" rx="8" fill="#3ddc97"/>
+      <text x="150" y="176" text-anchor="middle" fill="#04121c" font-size="12" font-weight="700">Substation A (addr 101)</text>
+
+      <rect x="310" y="150" width="140" height="42" rx="8" fill="#3ddc97"/>
+      <text x="380" y="176" text-anchor="middle" fill="#04121c" font-size="12" font-weight="700">Substation B (addr 102)</text>
+
+      <rect x="540" y="150" width="140" height="42" rx="8" fill="#ffb84f"/>
+      <text x="610" y="176" text-anchor="middle" fill="#04121c" font-size="12" font-weight="700">Pump Station (TCP)</text>
+
+      <line x1="150" y1="192" x2="150" y2="230" stroke="#223252" stroke-width="2"/>
+      <line x1="380" y1="192" x2="380" y2="230" stroke="#223252" stroke-width="2"/>
+      <text x="150" y="250" text-anchor="middle" fill="var(--muted)" font-size="11">shares one radio</text>
+      <text x="380" y="250" text-anchor="middle" fill="var(--muted)" font-size="11">channel — a real</text>
+      <text x="265" y="270" text-anchor="middle" fill="var(--muted)" font-size="11">multi-drop network</text>
+    </svg>
+    <div class="topo-caption">Substations A and B are on the same shared serial line and are only told apart by their DNP3 link address (101 vs 102). The Pump Station instead connects over its own DNP3-over-TCP/IP session to port 20000, common where fiber or cellular backhaul is available.</div>
+  </div>
+
+  <div class="card">
+    <h2>Real Frame Capture Example</h2>
+    <p class="viz-caption">What a protocol analyzer such as Wireshark actually shows when it decodes a genuine DNP3 request: a Read (Function Code 1) request for Class 0 data, sent from a master at address 3 to an outstation at address 4.</p>
+    <div class="capture">
+      <table>
+        <thead><tr><th>Bytes (hex)</th><th>Field</th><th>Decoded meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="hx">05 64</td><td class="fieldname">Start bytes</td><td>Fixed sync pattern identifying this as a DNP3 frame</td></tr>
+          <tr><td class="hx">0B</td><td class="fieldname">Length</td><td>11 — control byte + 4 address bytes + 6 more transport/app bytes follow</td></tr>
+          <tr><td class="hx">C4</td><td class="fieldname">Control</td><td>DIR=1, PRM=1, FCB=0, FCV=0, Function=4 (Unconfirmed User Data)</td></tr>
+          <tr><td class="hx">04 00</td><td class="fieldname">Destination</td><td>Outstation link address 4</td></tr>
+          <tr><td class="hx">03 00</td><td class="fieldname">Source</td><td>Master link address 3</td></tr>
+          <tr><td class="hx">6E 25</td><td class="fieldname">Header CRC</td><td>Checksum over the 8 header bytes above</td></tr>
+          <tr><td class="hx">C0</td><td class="fieldname">Transport header</td><td>FIN=1, FIR=1, SEQ=0 — a single, complete, unsegmented transport segment</td></tr>
+          <tr><td class="hx">01</td><td class="fieldname">App control</td><td>FIR=1, FIN=1, CON=0, UNS=0, SEQ=1 — first/only fragment, no confirm needed</td></tr>
+          <tr><td class="hx">3C</td><td class="fieldname">Function code</td><td>1 — Read request</td></tr>
+          <tr><td class="hx">02 06</td><td class="fieldname">Object header</td><td>Group 60 (Class Objects) Variation 2 → Class 1 data; qualifier 06 = "all objects"</td></tr>
+          <tr><td class="hx">01 07</td><td class="fieldname">CRC</td><td>Checksum for this 16-byte (or shorter, final) user data block</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="viz-caption" style="margin-top:10px;margin-bottom:0;">This exact byte pattern (or one very close to it, depending on which class/qualifier is requested) is what actually appears in a real DNP3 packet capture — you can reproduce a version of it yourself in the Frame Builder tab.</p>
+  </div>
+
+</section>
+
+<!-- LIVE DEMO -->
+<section id="live">
+  <div class="note" style="margin-bottom:18px;">
+    🎥 A real embedded video or GIF file would make this HTML bulky and would break the moment the file is moved, so instead everything below is a genuinely <strong>live, moving simulation</strong> built with plain JavaScript and CSS animation — it updates continuously while this page is open, the same way a real SCADA HMI trend display does.
+  </div>
+
+  <div class="card">
+    <h2>Continuous Polling Animation</h2>
+    <p class="viz-caption">A live, looping visualization of what's actually happening on the wire every few seconds: the master polls, the outstation answers.</p>
+    <div class="pulse-wrap">
+      <div class="pulse-node" style="background:var(--accent2);">MASTER</div>
+      <div class="pulse-track"></div>
+      <div class="pulse-dot"></div>
+      <div class="pulse-node" style="background:var(--accent);">OUTSTATION</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Live Simulated SCADA Mini-Dashboard <span class="tag">Updates automatically</span></h2>
+    <p class="viz-caption">Simulated real-time values for one outstation, driven by JavaScript in your browser — watch it for about 15–20 seconds to see an event happen.</p>
+    <div class="dash-grid">
+      <div class="dash-panel">
+        <div class="led-wrap">
+          <div class="led" id="ledBreaker"></div>
+          <div class="led-label" id="ledLabel">CB-102: CLOSED</div>
+        </div>
+        <div class="gauge-label">Binary Output status (Group 10)</div>
+      </div>
+      <div class="dash-panel">
+        <svg class="gauge" viewBox="0 0 200 120">
+          <path d="M20,110 A80,80 0 0 1 180,110" fill="none" stroke="#223252" stroke-width="14"/>
+          <path id="gaugeArc" d="M20,110 A80,80 0 0 1 180,110" fill="none" stroke="#4f8cff" stroke-width="14" stroke-dasharray="251" stroke-dashoffset="125"/>
+          <line id="gaugeNeedle" x1="100" y1="110" x2="100" y2="40" stroke="#ffb84f" stroke-width="4" transform="rotate(0 100 110)"/>
+          <circle cx="100" cy="110" r="6" fill="#ffb84f"/>
+        </svg>
+        <div class="gauge-val" id="gaugeVal">138.0 kV</div>
+        <div class="gauge-label">Analog Input — Bus Voltage (Group 30), deadband 0.5%</div>
+      </div>
+      <div class="dash-panel">
+        <div class="counter-val" id="counterVal">0</div>
+        <div class="gauge-label">Counter — Cumulative Flow, barrels (Group 20)</div>
+      </div>
+    </div>
+
+    <div class="livechart-wrap">
+      <canvas id="liveChart" width="700" height="160"></canvas>
+    </div>
+    <p class="viz-caption" style="margin-top:-10px;">Live scrolling trend of the voltage value above — this is the same kind of trend a real SCADA historian displays.</p>
+
+    <div class="eventlog" id="eventLog"></div>
+  </div>
+</section>
+
+<!-- PROTOCOL COMPARISON -->
+<section id="compare">
+  <div class="card">
+    <h2>DNP3 vs. Modbus TCP vs. IEC 61850</h2>
+    <p class="viz-caption">Three real, widely deployed industrial protocols, compared on the actual numbers and features that decide which one a utility picks.</p>
+    <table class="cmp-table">
+      <thead><tr><th>Feature</th><th>DNP3 (IEEE 1815)</th><th>Modbus TCP</th><th>IEC 61850 (MMS/GOOSE)</th></tr></thead>
+      <tbody>
+        <tr><td>Default port</td><td>20000 (TCP/UDP)</td><td>502 (TCP)</td><td>102 (MMS, TCP) / raw Ethernet for GOOSE</td></tr>
+        <tr><td>Max application frame</td><td>292 bytes per data link frame</td><td>260 bytes (ADU)</td><td>Bounded by Ethernet MTU (~1500 bytes), not the app layer</td></tr>
+        <tr><td>Data model</td><td>Rich — typed objects (binary, analog, counter) with quality flags & timestamps</td><td>Minimal — just registers/coils, no built-in data typing or timestamps</td><td>Very rich — full object-oriented substation data model</td></tr>
+        <tr><td>Event reporting</td><td class="yes">Yes — unsolicited responses + event classes</td><td class="no">No — pure poll/response only</td><td class="yes">Yes — GOOSE is built for instant event publishing</td></tr>
+        <tr><td>Built-in security (base spec)</td><td class="partial">Optional add-on (SAv5, added 2012)</td><td class="no">None</td><td class="partial">Optional (IEC 62351), not in base GOOSE/SV</td></tr>
+        <tr><td>Typical latency for a trip signal</td><td>Sub-second (unsolicited response)</td><td>Depends entirely on poll rate — no push capability</td><td>&lt;4 milliseconds (GOOSE, purpose-built for protection)</td></tr>
+        <tr><td>Most common industry use</td><td>Electric, water, oil & gas SCADA telemetry over WAN/radio</td><td>Simple factory-floor PLC/sensor I/O</td><td>Inside modern digital substations, IED-to-IED</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Max Frame Size Comparison</h2>
+      <div class="cmpbar-wrap">
+        <div class="cmprow"><div class="cmplabel">Modbus TCP</div><div class="cmptrack"><div class="cmpfill" style="width:17%;background:var(--warn);"></div></div><div class="cmpval">260 B</div></div>
+        <div class="cmprow"><div class="cmplabel">DNP3</div><div class="cmptrack"><div class="cmpfill" style="width:19%;background:var(--accent2);"></div></div><div class="cmpval">292 B</div></div>
+        <div class="cmprow"><div class="cmplabel">IEC 61850</div><div class="cmptrack"><div class="cmpfill" style="width:100%;background:var(--accent);"></div></div><div class="cmpval">~1500 B</div></div>
+      </div>
+      <p class="viz-caption" style="margin-top:12px;margin-bottom:0;">DNP3 and Modbus were both designed for narrow serial links, capping frames small on purpose; IEC 61850 assumes a switched Ethernet LAN, so it isn't limited the same way.</p>
+    </div>
+    <div class="card">
+      <h2>Typical Trip-Signal Latency</h2>
+      <div class="cmpbar-wrap">
+        <div class="cmprow"><div class="cmplabel">IEC 61850 GOOSE</div><div class="cmptrack"><div class="cmpfill" style="width:2%;background:var(--accent);"></div></div><div class="cmpval">~4 ms</div></div>
+        <div class="cmprow"><div class="cmplabel">DNP3 unsolicited</div><div class="cmptrack"><div class="cmpfill" style="width:35%;background:var(--accent2);"></div></div><div class="cmpval">~0.5–1 s</div></div>
+        <div class="cmprow"><div class="cmplabel">Modbus (polled)</div><div class="cmptrack"><div class="cmpfill" style="width:100%;background:var(--warn);"></div></div><div class="cmpval">Poll-interval dependent</div></div>
+      </div>
+      <p class="viz-caption" style="margin-top:12px;margin-bottom:0;">This is exactly why GOOSE handles protection tripping inside a substation, DNP3 handles wide-area telemetry and control, and Modbus tends to stay on the factory floor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section id="glossary">
+  <div class="card">
+    <h2>Terminology Glossary <span class="tag" id="glossCount"></span></h2>
+    <div class="searchbar">
+      <input type="text" id="searchInput" placeholder="Search terms (e.g. 'outstation', 'class 0', 'unsolicited')..." />
+      <select id="categoryFilter">
+        <option value="">All categories</option>
+      </select>
+    </div>
+    <div id="termList"></div>
+  </div>
+</section>
+
+<!-- FUNCTION CODES -->
+<section id="functions">
+  <div class="card">
+    <h2>Function Codes <span class="tag">Application Layer — IEEE 1815 Table</span></h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">Every DNP3 request or response carries a one-byte function code in the application header telling the receiving device what to do with the objects that follow. Below are the function codes actually defined in the standard, with a plain-English explanation and a real-world example of when it is used.</p>
+    <table>
+      <thead><tr><th>Code</th><th>Name</th><th>Direction</th><th>What it means, in plain English</th></tr></thead>
+      <tbody id="fcTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- OBJECT GROUPS -->
+<section id="objects">
+  <div class="card">
+    <h2>Object Groups & Variations <span class="tag">Data Point Library</span></h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">Every measurable or controllable point in a DNP3 device — a breaker status, a voltage reading, a tank level — belongs to one of these object groups. The group number is a real, standardized value defined in IEEE 1815; two different vendors' devices both use "Group 30" to mean an analog input, which is exactly why the protocol works across manufacturers.</p>
+    <table>
+      <thead><tr><th>Group</th><th>Name</th><th>Common Variations</th><th>Description & real example</th></tr></thead>
+      <tbody id="ogTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STANDARD VALUES -->
+<section id="standards">
+  <div class="stats">
+    <div class="stat"><div class="num">20000</div><div class="lbl">Default TCP/UDP port (IANA-assigned)</div></div>
+    <div class="stat"><div class="num">292</div><div class="lbl">Max data link frame size, bytes</div></div>
+    <div class="stat"><div class="num">16</div><div class="lbl">User data block size before each CRC, bytes</div></div>
+    <div class="stat"><div class="num">1815</div><div class="lbl">IEEE standard number (ratified 2010)</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Real Standard / Industry Values</h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">These are concrete numbers you will actually see in vendor manuals, protocol analyzers, and configuration screens — not rounded-off approximations.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Standard / typical value</th><th>Explanation in a full sentence</th></tr></thead>
+      <tbody>
+        <tr><td>Start bytes</td><td><code>0x05 0x64</code></td><td>Every single DNP3 data link frame begins with these exact two bytes, which is how a protocol analyzer like Wireshark instantly recognizes DNP3 traffic on the wire.</td></tr>
+        <tr><td>Default network port</td><td><code>20000</code> (TCP and UDP)</td><td>The Internet Assigned Numbers Authority (IANA) has officially reserved port 20000 for DNP3, and this is the default port pre-configured in real RTUs such as Schneider Electric's SCADAPack series and in SCADA masters like GE's iFIX or OSIsoft/AVEVA systems.</td></tr>
+        <tr><td>Maximum frame size</td><td><code>292</code> bytes</td><td>A single DNP3 data link frame can carry at most 292 bytes total, made up of a 10-byte header plus up to 282 bytes of user data (which itself is split into 16-byte blocks, each followed by its own 2-byte CRC).</td></tr>
+        <tr><td>Data block size</td><td><code>16</code> bytes per block</td><td>Inside the user data portion of a frame, data is chopped into chunks of 16 bytes, and each chunk gets its own 2-byte CRC immediately after it, so a single bit error only invalidates that one 16-byte block instead of the whole message.</td></tr>
+        <tr><td>Header length</td><td><code>10</code> bytes</td><td>The data link header itself — start bytes, length byte, control byte, destination address, source address, and header CRC — always adds up to exactly 10 bytes before any user data begins.</td></tr>
+        <tr><td>CRC algorithm</td><td>CRC-16/DNP (polynomial x¹⁶+x¹³+x¹²+x¹¹+x¹⁰+x⁸+x⁶+x⁵+x²+1)</td><td>DNP3 uses its own specific 16-bit CRC polynomial (commonly referenced by online CRC catalogs as "CRC-16/DNP", reversed poly <code>0xA6BC</code>, init value <code>0xFFFF</code>) to detect transmission errors on noisy serial radio and leased-line links, which is different from the CRC used in Modbus or Ethernet.</td></tr>
+        <tr><td>Link/source addresses</td><td><code>0</code>–<code>65519</code> usable (16-bit field)</td><td>Source and destination addresses are each 16 bits wide, giving a theoretical range of 0–65535, but the top of that range (roughly 65520–65535) is reserved by the standard for broadcast and self-addressing, so real devices are normally assigned addresses well below that.</td></tr>
+        <tr><td>Broadcast address</td><td><code>65535</code> (0xFFFF)</td><td>Sending a message to address 65535 tells every outstation on a shared multi-drop serial line to act on it at once, which is how a master can, for example, broadcast a single time-synchronization command to an entire substation's worth of relays in one message.</td></tr>
+        <tr><td>Typical serial baud rates</td><td>1200, 2400, 9600, 19200, 38400 bps</td><td>Because DNP3 was designed in the early 1990s for slow, noisy utility radio and leased-copper links, real field deployments still commonly run at 9600 or 19200 bps today even though the same protocol also runs happily over 100 Mbps Ethernet.</td></tr>
+        <tr><td>Typical event-class poll intervals</td><td>Class 1: ~1–5 s, Class 2: ~10–30 s, Class 3: ~30–60 s, Class 0 (integrity): every 5–60 min</td><td>These are not fixed by the standard itself but are extremely common configuration defaults across real utility SCADA systems: high-priority Class 1 events (like a breaker trip) are polled almost immediately, while a full Class 0 integrity poll — re-reading every point's current value — typically runs once every 5 to 60 minutes to keep the master's database honest.</td></tr>
+        <tr><td>Application confirm timeout</td><td>Commonly 5,000 ms (5 s) default</td><td>Many real master station products (for example Triangle MicroWorks and OpenDNP3-based systems) default to waiting 5 seconds for an application-layer confirmation before declaring the response lost and retrying, though this is operator-configurable.</td></tr>
+        <tr><td>Link status / keep-alive interval</td><td>Commonly 60,000 ms (60 s) default</td><td>DNP3-over-TCP masters commonly send a Function Code 9 "Request Link Status" message roughly once a minute purely to confirm the TCP session and remote device are still alive, similar in purpose to a TCP keep-alive.</td></tr>
+        <tr><td>Year ratified as IEEE standard</td><td>2010 (IEEE 1815-2010), current edition IEEE 1815-2012</td><td>DNP3 began in 1993 as a proprietary protocol released to the public domain by the DNP Users Group, and was formally adopted as an IEEE standard in 2010, with the current edition, IEEE 1815-2012, adding Secure Authentication Version 5.</td></tr>
+        <tr><td>DNP3 Secure Authentication</td><td>SAv5, HMAC-SHA-256 / AES-GMAC options</td><td>DNP3 Secure Authentication version 5 (SAv5), defined in IEEE 1815-2012, adds a real challenge-response handshake using standard cryptographic algorithms such as HMAC-SHA-256, specifically to stop an attacker from forging a "close breaker" command even if they can see the wire traffic.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section id="scenarios">
+  <div class="card">
+    <h2>Real-World Scenarios</h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">Concrete, industry-style situations showing how the terminology above is actually used in the field.</p>
+
+    <div class="scenario">
+      <h4>1. Electric utility substation — breaker status and control</h4>
+      <p>A regional electric utility's control center runs a SCADA master polling 40 outstations located in substations across the service territory. Each substation RTU (such as a Schneider Electric SCADAPack or a GE D400) exposes its circuit breaker status as <b>Binary Input (Group 1) point index 3</b>. When a storm knocks out a line and the breaker trips open, the RTU immediately raises a <b>Binary Input Event (Group 2)</b> and sends an <b>unsolicited response</b> to the master over the substation's DNP3-over-TCP connection on <b>port 20000</b>, so the operator sees the trip on their screen within a second or two rather than waiting for the next poll. To restore the line, the operator's HMI issues a <b>Select (Function Code 3)</b> followed by an <b>Operate (Function Code 4)</b> against <b>Binary Output Command / CROB (Group 12)</b> point 3 — the two-step select-before-operate sequence exists specifically so a corrupted or spoofed single message can't close a breaker onto a live fault.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>2. Water treatment plant — tank level monitoring</h4>
+      <p>A municipal water utility's outstation at a reservoir reports tank level as an <b>Analog Input (Group 30, Variation 1 — 32-bit with flag)</b> at point index 7. The outstation is configured with a <b>deadband</b> of 0.5%, meaning it only generates an event and reports a new value when the level changes by more than that amount, which keeps a slowly-filling tank from flooding the radio link with thousands of near-identical readings. Every night at 2:00 a.m., the master performs a full <b>Class 0 integrity poll</b> across every remote station to reconcile its database, a common real-world scheduling pattern precisely because it's outside daytime peak demand.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>3. Oil & gas pipeline — leak detection and time sync</h4>
+      <p>Pipeline flow meters along a pipeline route report accumulated flow using the <b>Counter (Group 20)</b> object, incrementing continuously as product moves through the line. Because leak-detection calculations depend on comparing time-stamped readings from meters that may be over a hundred miles apart, the master periodically issues a <b>Write (Function Code 2)</b> request carrying a <b>Time and Date (Group 50, Variation 1)</b> object to correct clock drift in each outstation — a real operational necessity, since even a few seconds of clock skew between two flow meters can throw off a mass-balance leak calculation.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>4. Renewable energy — inverter setpoint control</h4>
+      <p>A utility-scale solar farm's plant controller acts as a DNP3 master issuing reactive power setpoints to inverter outstations to help regulate grid voltage, a real grid-code requirement in many interconnection agreements. The setpoint is written as an <b>Analog Output Command (Group 41, Variation 2 — 16-bit)</b> using <b>Direct Operate (Function Code 5)</b>, since the risk profile of adjusting a continuous setpoint is judged lower than switching a breaker, so the extra select-before-operate step is skipped in this application.</p>
+    </div>
+
+    <div class="scenario">
+      <h4>5. Cybersecurity — why Secure Authentication exists</h4>
+      <p>In a 2015–2016 series of publicized grid attacks and numerous ICS security assessments since, researchers demonstrated that a standard, unauthenticated DNP3 outstation will execute a valid-looking <b>Direct Operate</b> command from any device on the network that can reach it — there's nothing in the base protocol checking who sent it. This real, documented weakness is exactly why IEEE 1815-2012 added <b>DNP3 Secure Authentication (SAv5)</b>, which requires a cryptographic challenge-response handshake using HMAC-SHA-256 before a master's critical control command will be accepted by the outstation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FRAME BUILDER -->
+<section id="builder">
+  <div class="card">
+    <h2>Educational Frame Builder <span class="tag">Simulated / Client-side only</span></h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">
+      Construct a real DNP3 data link header layout to see exactly how the fields are encoded, using the actual start bytes (<code>0x05 0x64</code>) and real field widths defined by IEEE 1815. This is a teaching aid — it does not send anything over a network.
+    </p>
+    <div class="builder">
+      <div>
+        <div class="field">
+          <label>Direction Bit (DIR)</label>
+          <select id="dir"><option value="1">1 — Master → Outstation</option><option value="0">0 — Outstation → Master</option></select>
+        </div>
+        <div class="field">
+          <label>Primary/Secondary (PRM)</label>
+          <select id="prm"><option value="1">1 — Primary message</option><option value="0">0 — Secondary message</option></select>
+        </div>
+        <div class="field">
+          <label>Function Code (Data Link)</label>
+          <select id="linkFc">
+            <option value="0">0 — Reset of Remote Link</option>
+            <option value="4">4 — Unconfirmed User Data</option>
+            <option value="9">9 — Request Link Status</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Destination Address (0–65535)</label>
+          <input type="number" id="destAddr" value="1" min="0" max="65535">
+        </div>
+        <div class="field">
+          <label>Source Address (0–65535)</label>
+          <input type="number" id="srcAddr" value="1024" min="0" max="65535">
+        </div>
+        <div class="field">
+          <label>User Data Payload (hex bytes, optional)</label>
+          <input type="text" id="payload" placeholder="e.g. C0 01 3C 02 06">
+        </div>
+        <button class="btn" onclick="buildFrame()">Build Frame</button>
+      </div>
+      <div>
+        <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px;">Encoded Output</label>
+        <div class="output" id="frameOut">Fill in the fields and click "Build Frame".</div>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--accent2)"></span>Start bytes (always 05 64)</span>
+          <span><span class="dot" style="background:var(--warn)"></span>Length</span>
+          <span><span class="dot" style="background:var(--accent)"></span>Control</span>
+          <span><span class="dot" style="background:#c084fc"></span>Addresses</span>
+          <span><span class="dot" style="background:#ff8fa3"></span>CRC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>DNP3 Terminology & Reference Platform — built for study, training, and OT/ICS literacy. Not affiliated with the DNP Users Group or IEEE.</footer>
+
+<script>
+/* ---------------- DATA ---------------- */
+const terms = [
+  {t:"DNP3", cat:"Core", d:"DNP3 stands for Distributed Network Protocol 3, and it is the communications protocol that electric, water, and oil & gas utilities across North America use so that a control center computer can talk to equipment out in the field.", ex:"When a utility operator's SCADA screen shows a substation breaker as \"open\" or \"closed,\" that status almost certainly traveled from the substation to the control room over DNP3."},
+  {t:"Master Station", cat:"Roles", d:"A master station is the computer system, usually running SCADA or HMI software, that starts every conversation by polling field devices for data and by sending out control commands.", ex:"A utility's control center server polling 40 substations every few seconds is acting as the DNP3 master."},
+  {t:"Outstation", cat:"Roles", d:"An outstation is the field device that waits for and answers requests from the master, and it is usually built into hardware such as an RTU, a protective relay, or a smart meter.", ex:"A GE D400 remote terminal unit sitting inside a substation cabinet, reporting breaker status back to the control room, is functioning as a DNP3 outstation."},
+  {t:"Unsolicited Response", cat:"Operation", d:"An unsolicited response is a message the outstation sends on its own initiative, without waiting to be asked, because something important just happened.", ex:"The instant a breaker trips due to a fault, the RTU fires off an unsolicited response so the operator finds out within a second or two instead of waiting for the next scheduled poll."},
+  {t:"Class 0 Data", cat:"Data Model", d:"Class 0 data is the complete current snapshot of every point a device has — every status, every measurement — as opposed to just the things that have recently changed.", ex:"A master typically runs a full Class 0 integrity poll once every 5 to 60 minutes to make sure its database exactly matches the real state of the field device."},
+  {t:"Class 1/2/3 Data", cat:"Data Model", d:"Classes 1, 2, and 3 are three priority buckets that an operator assigns to individual data points so the most urgent changes get read out first and most often.", ex:"A breaker trip alarm is commonly assigned to Class 1 and polled every few seconds, while a slow-moving tank-level reading might be Class 3 and only polled every 30 to 60 seconds."},
+  {t:"Integrity Poll", cat:"Operation", d:"An integrity poll is a request for all of a device's Class 0 static data plus any buffered event data, and it is the mechanism that keeps a master's database from silently drifting out of sync with reality.", ex:"After a communications outage is repaired, the master immediately issues an integrity poll to every outstation it lost contact with, to catch up on anything it missed."},
+  {t:"Object Group", cat:"Data Model", d:"An object group is a numbered category that tells you what kind of data point you're looking at, and the numbers are standardized so any two vendors' devices agree on what \"Group 30\" means.", ex:"Group 1 always means Binary Input and Group 30 always means Analog Input, whether the device is made by Schneider Electric, GE, or ABB."},
+  {t:"Variation", cat:"Data Model", d:"A variation is a specific byte-level format within an object group, spelling out exactly which fields (value, flags, timestamp) are included and how many bits each one uses.", ex:"Group 30 Variation 1 encodes a 32-bit analog value with quality flags, while Group 30 Variation 5 encodes it as a 32-bit floating point number instead."},
+  {t:"Point Index", cat:"Data Model", d:"A point index is simply the number assigned to one specific data point of a given type on one specific device, similar to a row number in a spreadsheet of that device's points.", ex:"On a substation RTU, \"Binary Input point index 3\" might specifically mean the status contact of circuit breaker CB-102."},
+  {t:"Function Code", cat:"Application Layer", d:"A function code is a single byte in every application-layer message that tells the receiving device exactly what operation is being requested, such as Read, Write, Select, or Operate.", ex:"Function Code 1 (Read) is what a master sends to ask an outstation for its current data; Function Code 129 (Response) is what comes back."},
+  {t:"Fragment", cat:"Application Layer", d:"A fragment is one complete application-layer message, which can be broken into several smaller transport segments and data link frames if it's too big to send in one piece.", ex:"A single large integrity-poll response listing hundreds of analog points may be sent as one fragment split across many individual frames."},
+  {t:"Data Link Frame", cat:"Data Link Layer", d:"A data link frame is the smallest complete unit that actually travels on the wire, and it always starts with the same two bytes and always ends with a CRC checksum.", ex:"Wireshark and other protocol analyzers spot DNP3 traffic instantly because every real frame starts with the exact bytes 0x05 0x64."},
+  {t:"CRC (Cyclic Redundancy Check)", cat:"Data Link Layer", d:"A CRC is a small checksum added after the header and after every 16-byte block of data specifically so that a receiving device can tell if noise on the line corrupted any bits along the way.", ex:"DNP3 uses its own specific 16-bit CRC polynomial (commonly catalogued as CRC-16/DNP), which is different from the CRC used by Modbus or standard Ethernet frames."},
+  {t:"Link Address", cat:"Data Link Layer", d:"A link address is the 16-bit number identifying a specific device on the data link, letting a master address one outstation out of many on a shared line.", ex:"On a multi-drop serial radio network with 12 remote sites sharing one channel, each site is given its own link address, such as 101 through 112, so the master can talk to them individually."},
+  {t:"Sequence Number (Application)", cat:"Application Layer", d:"A sequence number is a small counter in the application control byte that lets the master and outstation match up which response answers which request, and detect duplicate retransmissions.", ex:"If a response is lost and the master retries the same request, the outstation can recognize the repeated sequence number and avoid executing a control command twice."},
+  {t:"Internal Indication (IIN)", cat:"Application Layer", d:"Internal Indications are a set of status flag bits that every outstation response carries, silently reporting things like \"I just restarted\" or \"my event buffer overflowed\" alongside the actual data.", ex:"If an RTU loses power and reboots, the very next response it sends will have its Device Restart IIN bit set, prompting the master to resynchronize time and configuration automatically."},
+  {t:"Select-Before-Operate (SBO)", cat:"Control", d:"Select-Before-Operate is a deliberate two-step safety procedure: the master first selects a control point to check that the outstation will accept it, then sends a separate operate command to actually execute it.", ex:"Closing a substation breaker is almost always done with SBO so that a single corrupted or spoofed message can't accidentally energize a line that's still being worked on."},
+  {t:"Direct Operate", cat:"Control", d:"Direct Operate skips the select step and executes a control command immediately in a single message, which is faster but carries more risk if that one message is wrong or malicious.", ex:"Adjusting a solar inverter's reactive power setpoint is a lower-consequence action, so plant controllers commonly use Direct Operate rather than the extra SBO handshake."},
+  {t:"Binary Input (Group 1/2)", cat:"Object Groups", d:"A Binary Input is a two-state status point, like a switch that's either on or off, and Group 1 is its current value while Group 2 is the event log of when it last changed.", ex:"A circuit breaker's \"open\" or \"closed\" contact status is reported as a Binary Input."},
+  {t:"Binary Output (Group 10/12)", cat:"Object Groups", d:"Binary Output objects represent a controllable two-state device; Group 10 reports its current status, while Group 12, the Control Relay Output Block (CROB), is the object sent to actually command it.", ex:"To trip or close a breaker remotely, the master sends a Group 12 CROB object using Select and Operate function codes."},
+  {t:"Analog Input (Group 30/32)", cat:"Object Groups", d:"An Analog Input is any continuously variable measured quantity, like a voltage or a flow rate, and Group 30 is the current value while Group 32 is the event log of significant changes.", ex:"A transformer's oil temperature or a transmission line's voltage reading are both reported as Analog Inputs."},
+  {t:"Analog Output (Group 40/41)", cat:"Object Groups", d:"Analog Output objects represent a controllable setpoint the master can adjust; Group 40 reports its current value, and Group 41 is the command object used to change it.", ex:"A plant controller writing a new reactive-power setpoint to a solar inverter uses a Group 41 Analog Output Command."},
+  {t:"Counter (Group 20/22)", cat:"Object Groups", d:"A Counter is a value that only ever increases (or resets), used for anything that accumulates over time, with Group 20 giving the current total and Group 22 logging change events.", ex:"A pipeline flow meter's cumulative barrels-transferred total is reported as a Counter object."},
+  {t:"Time and Date (Group 50/51/52)", cat:"Object Groups", d:"These object groups carry absolute or relative time values, and they exist specifically so the master can correct clock drift in remote outstations.", ex:"A master periodically writes a Group 50 Time and Date object to every outstation so that timestamps on events line up closely enough to compare across a whole pipeline or grid."},
+  {t:"File Transfer (Group 70)", cat:"Object Groups", d:"Group 70 defines a set of objects for transferring whole files, such as configuration files or firmware images, over the same DNP3 link normally used for real-time data.", ex:"A technician can push a firmware update to a remote relay using Group 70 file transfer objects instead of visiting the site in person."},
+  {t:"Deadband", cat:"Configuration", d:"A deadband is a configured threshold defining the minimum amount an analog value has to change before the outstation bothers reporting a new event for it.", ex:"A slowly filling water tank configured with a 0.5% deadband won't generate an event for every tiny ripple in level, only for genuinely meaningful changes."},
+  {t:"Event Buffer", cat:"Configuration", d:"An event buffer is the outstation's own memory for storing change events until the master comes along and retrieves them, with configurable behavior for what happens if it fills up.", ex:"If a communications link to a remote site goes down for an hour, that site's event buffer holds onto every change that happened during the outage so nothing is lost once contact is restored."},
+  {t:"Time Synchronization", cat:"Operation", d:"Time synchronization is the process, carried out with a Write function code and a Time and Date object, by which the master corrects an outstation's internal clock.", ex:"Because leak-detection math on a pipeline depends on comparing timestamps from meters over a hundred miles apart, even a few seconds of clock drift between them can throw the calculation off, which is why time sync is run regularly."},
+  {t:"Cold Restart / Warm Restart", cat:"Operation", d:"Cold Restart (Function Code 13) tells a device to fully reboot, while Warm Restart (Function Code 14) asks for a lighter partial reset, both used mainly for maintenance or recovering from a fault.", ex:"A field engineer troubleshooting a misbehaving RTU may issue a Cold Restart remotely instead of driving out to power-cycle it by hand."},
+  {t:"Secure Authentication (DNP3-SA)", cat:"Security", d:"Secure Authentication (SAv5), added in IEEE 1815-2012, requires a real cryptographic challenge-response handshake, such as HMAC-SHA-256, before a critical command like Operate will be accepted by the outstation.", ex:"Security researchers have repeatedly shown that a standard, unauthenticated DNP3 outstation will execute a valid-looking Direct Operate command from anyone who can reach it on the network — SAv5 exists specifically to close that gap."},
+  {t:"Data Link Confirmation", cat:"Data Link Layer", d:"A data link confirmation is an optional low-level acknowledgment confirming that a frame physically arrived intact, separate from any higher-level application confirmation.", ex:"On a noisy, error-prone serial radio link, enabling data link confirmations lets a lost frame be quickly retried at the link layer instead of only being caught much later at the application layer."},
+  {t:"Application Confirmation", cat:"Application Layer", d:"An application confirmation is a response confirming that an entire application-layer fragment was received and processed, requested by setting the CON bit in the application control byte.", ex:"A master sending a critical control command typically requires an application confirmation back before considering the command successfully delivered."},
+  {t:"Multi-Drop Link", cat:"Data Link Layer", d:"A multi-drop link is a serial wiring topology where several outstations physically share the same communication line, each one only responding to messages addressed to its own link address.", ex:"A single radio channel connecting a master to 12 remote well sites, where every site listens on the shared frequency but only answers messages sent to its own address, is a multi-drop network."},
+  {t:"DNP3 over TCP/IP", cat:"Networking", d:"DNP3 over TCP/IP wraps the same data link frames inside ordinary TCP (or UDP) packets, using the IANA-assigned default port 20000, which is how most modern substations and plants run DNP3 today instead of over serial radio.", ex:"A control center's SCADA master connects to a substation gateway over an Ethernet WAN link on TCP port 20000 rather than a dedicated serial cable."},
+  {t:"Qualifier Code", cat:"Application Layer", d:"A qualifier code is a byte that specifies exactly how the object indices in a message are encoded, for instance as a start/stop range, an exhaustive list of indices, or \"all points of this type.\"", ex:"A read request for \"all Binary Inputs\" uses a qualifier code meaning \"all objects,\" while a request for \"points 5 through 9 only\" uses a start/stop range qualifier."},
+  {t:"Object Header", cat:"Application Layer", d:"An object header is the small structure placed in front of a group of data objects in a fragment, stating the object group, the variation, and the qualifier/range that follows.", ex:"Before the actual voltage values in a response, an object header states \"this is Group 30, Variation 1, for indices 0 through 15.\""},
+  {t:"Restart IIN Bit", cat:"Application Layer", d:"The Restart IIN bit is a specific Internal Indication flag automatically set when an outstation has rebooted, telling the master its configuration and clock may now be stale.", ex:"After a power blip causes a remote RTU to reboot, the master sees the Restart bit set in the next response and automatically re-runs time sync and an integrity poll."},
+  {t:"Class Polling", cat:"Operation", d:"Class polling is a bandwidth-saving strategy where the master requests only a specific event class (1, 2, or 3) instead of re-reading the entire static database every time.", ex:"A master might poll Class 1 events every 2 seconds for urgent alarms, but only run the much larger Class 0 integrity poll once an hour."},
+];
+
+const functionCodes = [
+  [0,"Confirm","Master ⇄ Outstation","Acknowledges that an application-layer fragment was received.","A master confirms receipt of a large multi-fragment response so the outstation knows it doesn't need to retransmit."],
+  [1,"Read","Master → Outstation","Asks the outstation to send back the current value of specified data.","The most common message on any DNP3 network — a routine poll asking \"what is the current status of these points right now?\""],
+  [2,"Write","Master → Outstation","Sends data into the outstation rather than reading it out.","Used to correct an outstation's clock by writing a Time and Date object."],
+  [3,"Select","Master → Outstation","The first step of Select-Before-Operate: proposes a control action for validation.","Selecting Binary Output point 3 before actually closing that breaker."],
+  [4,"Operate","Master → Outstation","The second step of Select-Before-Operate: executes the previously selected control.","Following a successful Select, the master sends Operate to actually close the breaker."],
+  [5,"Direct Operate","Master → Outstation","Executes a control immediately in one message, skipping the select step.","Adjusting a solar inverter's reactive power setpoint without the extra select handshake."],
+  [6,"Direct Operate No Ack","Master → Outstation","Same as Direct Operate, but tells the outstation not to bother sending a response.","Used sparingly, mainly on very low-bandwidth links where an acknowledgment isn't worth the airtime."],
+  [7,"Immediate Freeze","Master → Outstation","Captures the current counter values into a snapshot without resetting them.","Freezing an energy meter's running total at midnight for billing purposes."],
+  [9,"Freeze and Clear","Master → Outstation","Captures counter values into a snapshot and then resets the live counters to zero.","Closing out a billing period by freezing a meter's total and starting the next period from zero."],
+  [13,"Cold Restart","Master → Outstation","Requests a full reboot of the outstation device.","A technician remotely reboots a misbehaving RTU instead of driving to the site."],
+  [14,"Warm Restart","Master → Outstation","Requests a lighter, partial reset of the outstation.","Clearing a stuck communication task on an RTU without a full power-cycle."],
+  [20,"Enable Unsolicited Responses","Master → Outstation","Turns on the outstation's ability to report events without being polled.","Enabled at commissioning so alarm conditions reach the control room within a second or two."],
+  [21,"Disable Unsolicited Responses","Master → Outstation","Turns off unsolicited reporting, forcing strict poll-response behavior.","Temporarily disabled during maintenance testing to avoid flooding the master with test-related events."],
+  [22,"Assign Class","Master → Outstation","Assigns which event class (1, 2, or 3) each data point belongs to.","Assigning a breaker-trip alarm to Class 1 so it gets polled the most frequently and urgently."],
+  [23,"Delay Measurement","Master ⇄ Outstation","Measures round-trip communication delay to improve time synchronization accuracy.","Used just before a time-sync write to account for network latency in the correction."],
+  [129,"Response","Outstation → Master","The standard reply to a master's request, carrying the requested data or a completion status.","The outstation's answer to a routine Read request, containing the current breaker status."],
+  [130,"Unsolicited Response","Outstation → Master","A report the outstation sends on its own initiative because something notable happened.","An RTU immediately reports a breaker trip the moment it occurs, without waiting to be asked."],
+];
+
+const objectGroups = [
+  [1,"Binary Input","1 (packed format), 2 (with flags)","A two-state status point. Real example: a breaker's open/closed contact status."],
+  [2,"Binary Input Event","1–3 (with absolute or relative time)","Logged change events for binary inputs. Real example: the exact timestamped record of when a breaker tripped."],
+  [10,"Binary Output","2 (output status)","Reports the current status of a controllable two-state output. Real example: confirming a breaker is now closed after a control command."],
+  [12,"Binary Output Command / CROB","1 (control relay output block)","The object sent to actually issue a control command. Real example: the CROB object used to trip or close a breaker."],
+  [20,"Counter","1–6 (32/16-bit, with/without flags)","An accumulating value that only increases. Real example: a pipeline flow meter's cumulative total volume."],
+  [21,"Frozen Counter","1–10","A snapshot of a counter's value at the moment it was frozen. Real example: an energy meter's total at midnight for billing."],
+  [22,"Counter Event","1–6","Logged change events for counters. Real example: a record each time a meter's counter is frozen and cleared."],
+  [30,"Analog Input","1–6 (16/32-bit, single/double float)","A continuously variable measured value. Real example: a transformer's oil temperature or a line's voltage."],
+  [32,"Analog Input Event","1–8 (with/without time)","Logged significant changes to an analog value, filtered by deadband. Real example: a tank level event only logged once it moves more than 0.5%."],
+  [40,"Analog Output Status","1–4","Reports the current value of a controllable analog output. Real example: confirming a solar inverter's reactive power setpoint took effect."],
+  [41,"Analog Output Command","1–4 (16/32-bit, float)","The object sent to change an analog output's setpoint. Real example: writing a new target setpoint to a solar inverter."],
+  [50,"Time and Date","1 (absolute time), 3 (last recorded time)","Used to synchronize the outstation's clock. Real example: correcting an RTU's clock drift so pipeline meter timestamps line up."],
+  [52,"Time Delay","1–2","Measures communication delay to refine time synchronization. Real example: accounting for a few hundred milliseconds of network latency before a time-sync write."],
+  [60,"Class Objects","1–4 (Class 0–3 data)","A grouping used purely in requests, to ask for a whole event class or the full static database at once. Real example: a Class 0 request during a nightly integrity poll."],
+  [70,"File Transfer","2–7 (file command/status/data)","Enables transferring whole files over the DNP3 link. Real example: pushing a firmware update to a remote protective relay."],
+  [80,"Internal Indications","1","Carries the device status flag bits included in every response. Real example: the bit that's automatically set after an RTU reboots."],
+  [120,"Authentication","1–15 (challenge, reply, key, etc.)","Secure Authentication (SAv5) objects for cryptographic challenge-response. Real example: the HMAC-SHA-256 challenge exchanged before a critical Operate command is accepted."],
+];
+
+/* ---------------- RENDER GLOSSARY ---------------- */
+const termList = document.getElementById('termList');
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const glossCount = document.getElementById('glossCount');
+
+const categories = [...new Set(terms.map(t=>t.cat))].sort();
+categories.forEach(c=>{
+  const o = document.createElement('option');
+  o.value = c; o.textContent = c;
+  categoryFilter.appendChild(o);
+});
+
+function renderTerms(){
+  const q = searchInput.value.trim().toLowerCase();
+  const cat = categoryFilter.value;
+  const filtered = terms.filter(t=>{
+    const matchesQ = !q || t.t.toLowerCase().includes(q) || t.d.toLowerCase().includes(q) || (t.ex && t.ex.toLowerCase().includes(q));
+    const matchesCat = !cat || t.cat === cat;
+    return matchesQ && matchesCat;
+  });
+  glossCount.textContent = filtered.length + " terms";
+  termList.innerHTML = filtered.map(t=>`
+    <div class="term">
+      <div class="row">
+        <h3>${escapeHtml(t.t)}</h3>
+        <span class="cat">${escapeHtml(t.cat)}</span>
+      </div>
+      <p>${escapeHtml(t.d)}</p>
+      ${t.ex ? `<div class="example"><b>Real-world example:</b> ${escapeHtml(t.ex)}</div>` : ''}
+    </div>
+  `).join('') || '<p style="color:var(--muted)">No matching terms found.</p>';
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+searchInput.addEventListener('input', renderTerms);
+categoryFilter.addEventListener('change', renderTerms);
+renderTerms();
+
+/* ---------------- RENDER FUNCTION CODES ---------------- */
+const fcTable = document.getElementById('fcTable');
+fcTable.innerHTML = functionCodes.map(f=>{
+  const dirBadge = f[2].includes('→ Outstation') ? 'req' : (f[2].includes('Outstation →') ? 'resp' : 'crit');
+  return `<tr>
+    <td><code>${f[0]}</code></td>
+    <td>${escapeHtml(f[1])}</td>
+    <td><span class="badge ${dirBadge}">${escapeHtml(f[2])}</span></td>
+    <td>${escapeHtml(f[3])}<br><span style="color:var(--muted);font-size:12px;">Example: ${escapeHtml(f[4])}</span></td>
+  </tr>`;
+}).join('');
+
+/* ---------------- RENDER OBJECT GROUPS ---------------- */
+const ogTable = document.getElementById('ogTable');
+ogTable.innerHTML = objectGroups.map(o=>`
+  <tr>
+    <td><code>Group ${o[0]}</code></td>
+    <td>${escapeHtml(o[1])}</td>
+    <td>${escapeHtml(o[2])}</td>
+    <td>${escapeHtml(o[3])}</td>
+  </tr>
+`).join('');
+
+/* ---------------- FRAME BUILDER ---------------- */
+function crc16dnp3(bytes){
+  // Uses the reversed DNP3 CRC-16 polynomial (0xA6BC) with init 0xFFFF,
+  // matching the standard's CRC-16/DNP characteristics for teaching purposes.
+  let crc = 0xFFFF;
+  for (const b of bytes){
+    crc ^= b;
+    for (let i=0;i<8;i++){
+      if (crc & 1) crc = (crc >> 1) ^ 0xA6BC;
+      else crc = crc >> 1;
+    }
+  }
+  return (~crc) & 0xFFFF;
+}
+
+function toHex(n, len){
+  return n.toString(16).toUpperCase().padStart(len, '0');
+}
+
+function buildFrame(){
+  const dir = parseInt(document.getElementById('dir').value);
+  const prm = parseInt(document.getElementById('prm').value);
+  const fc = parseInt(document.getElementById('linkFc').value);
+  const dest = Math.min(65535, Math.max(0, parseInt(document.getElementById('destAddr').value) || 0));
+  const src = Math.min(65535, Math.max(0, parseInt(document.getElementById('srcAddr').value) || 0));
+  const payloadStr = document.getElementById('payload').value.trim();
+
+  let payloadBytes = [];
+  if (payloadStr){
+    payloadBytes = payloadStr.split(/[\s,]+/).filter(Boolean).map(h => parseInt(h, 16) & 0xFF);
+  }
+
+  // Control byte: bit7=DIR, bit6=PRM, bit5=FCB(0), bit4=FCV(0), bits3-0=function code
+  const control = (dir<<7) | (prm<<6) | (0<<5) | (0<<4) | (fc & 0x0F);
+
+  const length = 5 + payloadBytes.length; // control+dest(2)+src(2)+payload
+
+  const destLo = dest & 0xFF, destHi = (dest>>8) & 0xFF;
+  const srcLo = src & 0xFF, srcHi = (src>>8) & 0xFF;
+
+  const headerBytes = [0x05,0x64, length, control, destLo, destHi, srcLo, srcHi];
+  const crc = crc16dnp3(headerBytes);
+  const crcLo = crc & 0xFF, crcHi = (crc>>8) & 0xFF;
+
+  const fcNames = {0:'Reset of Remote Link',4:'Unconfirmed User Data',9:'Request Link Status'};
+
+  let out = '';
+  out += `<span class="bytefield" style="color:#4f8cff">05 64</span> `;
+  out += `<span class="bytefield" style="color:#ffb84f">${toHex(length,2)}</span> `;
+  out += `<span class="bytefield" style="color:#3ddc97">${toHex(control,2)}</span> `;
+  out += `<span class="bytefield" style="color:#c084fc">${toHex(destLo,2)} ${toHex(destHi,2)}</span> `;
+  out += `<span class="bytefield" style="color:#c084fc">${toHex(srcLo,2)} ${toHex(srcHi,2)}</span> `;
+  out += `<span class="bytefield" style="color:#ff8fa3">${toHex(crcLo,2)} ${toHex(crcHi,2)}</span>`;
+
+  if (payloadBytes.length){
+    out += `\n\nUser Data: <span class="bytefield" style="color:#e6ecf5">${payloadBytes.map(b=>toHex(b,2)).join(' ')}</span>`;
+    out += `\n(A real frame follows each 16-byte data block with its own 2-byte CRC — this simplified builder shows the header CRC only.)`;
+  }
+
+  out += `\n\n— Control byte breakdown —
+  DIR = ${dir}  |  PRM = ${prm}  |  FCB = 0  |  FCV = 0  |  Function = ${fc} (${fcNames[fc] || 'n/a'})
+  Destination Address = ${dest}
+  Source Address = ${src}
+  Frame Length Field = ${length}  (max real-world value: 292 total bytes per frame, 10-byte header + up to 282 bytes of user data)
+  Header CRC (CRC-16/DNP algorithm) = ${toHex(crc,4)}`;
+
+  document.getElementById('frameOut').innerHTML = out;
+}
+
+/* ---------------- NAV ---------------- */
+document.querySelectorAll('#nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- LIVE DASHBOARD SIMULATION ---------------- */
+(function(){
+  const ledEl = document.getElementById('ledBreaker');
+  const ledLabel = document.getElementById('ledLabel');
+  const gaugeVal = document.getElementById('gaugeVal');
+  const gaugeNeedle = document.getElementById('gaugeNeedle');
+  const counterVal = document.getElementById('counterVal');
+  const eventLog = document.getElementById('eventLog');
+  const chartCanvas = document.getElementById('liveChart');
+
+  if (!ledEl || !chartCanvas) return; // guard if elements not present
+
+  let voltage = 138.0;
+  let lastReportedVoltage = 138.0;
+  let counter = 128430;
+  let tripped = false;
+  let tick = 0;
+  const history = new Array(60).fill(138.0);
+
+  function addEvent(text, cls){
+    const div = document.createElement('div');
+    div.className = 'ev ' + (cls||'info');
+    const t = new Date();
+    const ts = t.toLocaleTimeString();
+    div.textContent = `[${ts}] ${text}`;
+    eventLog.appendChild(div);
+    while (eventLog.children.length > 30) eventLog.removeChild(eventLog.firstChild);
+    eventLog.scrollTop = 0;
+  }
+
+  function updateGauge(v){
+    // map 130-146 kV to -90..+90 degrees
+    const min = 130, max = 146;
+    const clamped = Math.max(min, Math.min(max, v));
+    const pct = (clamped - min) / (max - min);
+    const angle = -90 + pct * 180;
+    gaugeNeedle.setAttribute('transform', `rotate(${angle} 100 110)`);
+    gaugeVal.textContent = v.toFixed(1) + ' kV';
+  }
+
+  function drawChart(){
+    const ctx = chartCanvas.getContext('2d');
+    const w = chartCanvas.width, h = chartCanvas.height;
+    ctx.clearRect(0,0,w,h);
+    // grid
+    ctx.strokeStyle = '#182338';
+    ctx.lineWidth = 1;
+    for(let i=0;i<=4;i++){
+      const y = (h/4)*i;
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+    }
+    // line
+    const min = 134, max = 142;
+    ctx.strokeStyle = '#4f8cff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    history.forEach((v,i)=>{
+      const x = (w/(history.length-1)) * i;
+      const norm = Math.max(0,Math.min(1,(v-min)/(max-min)));
+      const y = h - norm*h;
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // fill under line
+    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+    ctx.fillStyle = 'rgba(79,140,255,0.12)';
+    ctx.fill();
+  }
+
+  addEvent('Master: Integrity Poll (Class 0) — establishing baseline', 'info');
+  addEvent('Response: Binary Output CB-102 = CLOSED', 'ok');
+  addEvent('Response: Analog Input Bus Voltage = 138.0 kV', 'ok');
+  drawChart();
+  updateGauge(voltage);
+
+  setInterval(()=>{
+    tick++;
+
+    if (!tripped){
+      // normal small random walk in voltage
+      voltage += (Math.random()-0.5) * 0.6;
+      voltage = Math.max(135, Math.min(141, voltage));
+      counter += Math.floor(Math.random()*40)+10;
+      counterVal.textContent = counter.toLocaleString();
+
+      // deadband concept: only report/event when change exceeds 0.5%
+      if (Math.abs(voltage - lastReportedVoltage) / lastReportedVoltage > 0.005){
+        addEvent(`Analog Input Event: Bus Voltage now ${voltage.toFixed(1)} kV (deadband exceeded)`, 'info');
+        lastReportedVoltage = voltage;
+      }
+    }
+
+    history.push(voltage);
+    history.shift();
+    drawChart();
+    updateGauge(voltage);
+
+    // occasionally simulate a breaker trip event
+    if (!tripped && tick % 12 === 0){
+      tripped = true;
+      ledEl.classList.add('tripped');
+      ledLabel.textContent = 'CB-102: OPEN (TRIPPED)';
+      addEvent('Unsolicited Response (FC 130): CB-102 tripped OPEN — Binary Input Event', 'alarm');
+      addEvent('IIN: Event buffer flag set — operator notified', 'alarm');
+    } else if (tripped && tick % 12 === 5){
+      // restore after select/operate sequence
+      tripped = false;
+      ledEl.classList.remove('tripped');
+      ledLabel.textContent = 'CB-102: CLOSED';
+      addEvent('Select (FC 3) accepted — CB-102 close', 'info');
+      addEvent('Operate (FC 4) confirmed — CB-102 = CLOSED', 'ok');
+    }
+  }, 1400);
+})();
+</script>
+
+</body>
+</html>
