@@ -110,14 +110,114 @@ function toHex(n, len){
 }
 
 /* ---------------- NAVIGATION ---------------- */
+const CURRICULUM = [
+  {id:'why',        title:'Why DNP3'},
+  {id:'how',        title:'How It Works'},
+  {id:'compare',    title:'Protocol Comparison'},
+  {id:'scenarios',  title:'Real-World Scenarios'},
+  {id:'glossary',   title:'Glossary'},
+  {id:'functions',  title:'Function Codes'},
+  {id:'objects',    title:'Object Groups'},
+  {id:'standards',  title:'Standard Values'},
+  {id:'visuals',    title:'Visuals'},
+  {id:'live',       title:'Live Demo'},
+  {id:'builder',    title:'Frame Builder'},
+];
+
+function goToSection(tabId){
+  document.querySelectorAll('.nav-home, .nav-link').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+
+  const targetBtn = document.querySelector(`[data-tab="${tabId}"]`);
+  const targetSection = document.getElementById(tabId);
+  if (targetBtn) targetBtn.classList.add('active');
+  if (targetSection) targetSection.classList.add('active');
+
+  updatePageNav(tabId);
+  closeSidebar();
+  const mc = document.getElementById('mainContent');
+  if (mc) mc.scrollTo({top:0, behavior:'instant' in document.documentElement.style ? 'instant' : 'auto'});
+  window.scrollTo(0,0);
+}
+
+function updatePageNav(tabId){
+  const pageNav = document.getElementById('pageNav');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progress = document.getElementById('pageProgress');
+  if (!pageNav) return;
+
+  const idx = CURRICULUM.findIndex(s => s.id === tabId);
+  if (idx === -1){
+    // Home dashboard: no linear prev/next controls
+    pageNav.classList.add('hidden');
+    return;
+  }
+  pageNav.classList.remove('hidden');
+
+  const prev = idx > 0 ? CURRICULUM[idx-1] : null;
+  const next = idx < CURRICULUM.length-1 ? CURRICULUM[idx+1] : null;
+
+  if (prev){
+    prevBtn.innerHTML = `<small>← Previous</small>${prev.title}`;
+    prevBtn.disabled = false;
+    prevBtn.dataset.target = prev.id;
+  } else {
+    prevBtn.innerHTML = `<small>← Previous</small>Start Here`;
+    prevBtn.disabled = false;
+    prevBtn.dataset.target = 'home';
+  }
+
+  if (next){
+    nextBtn.innerHTML = `<small>Next →</small>${next.title}`;
+    nextBtn.disabled = false;
+    nextBtn.dataset.target = next.id;
+  } else {
+    nextBtn.innerHTML = `<small>You're done →</small>Back to Start`;
+    nextBtn.disabled = false;
+    nextBtn.dataset.target = 'home';
+  }
+
+  progress.textContent = `Step ${idx+1} of ${CURRICULUM.length}`;
+}
+
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('show');
+}
+function closeSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('show');
+}
+
 function initNavigation(){
-  document.querySelectorAll('#nav button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
-      document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
+  document.querySelectorAll('.nav-home, .nav-link').forEach(btn=>{
+    btn.addEventListener('click', ()=> goToSection(btn.dataset.tab));
+  });
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+
+  // initialize page-nav state for the default active section (home)
+  updatePageNav('home');
+}
+
+function initPageNav(){
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.addEventListener('click', ()=> goToSection(prevBtn.dataset.target));
+  if (nextBtn) nextBtn.addEventListener('click', ()=> goToSection(nextBtn.dataset.target));
+}
+
+function initHomeQuickStart(){
+  document.querySelectorAll('.quickstart-card').forEach(card=>{
+    card.addEventListener('click', ()=> goToSection(card.dataset.goto));
   });
 }
 
@@ -379,6 +479,8 @@ function initLiveDashboard(){
 /* ---------------- APP INITIALIZATION ---------------- */
 function initApp(){
   initNavigation();
+  initPageNav();
+  initHomeQuickStart();
   renderGlossary();
   renderFunctionCodesTable();
   renderObjectGroupsTable();
