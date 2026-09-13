@@ -45,31 +45,68 @@
 <section id="why" class="active">
   <div class="card">
     <h2>Why DNP3 Needed To Exist</h2>
-    <p>In the 1980s and early 1990s, every electric, water, and gas utility that wanted to monitor equipment from a control room had to buy a SCADA master and remote terminal units from the same vendor, because every manufacturer used its own private, undocumented protocol. That created three very real, very expensive problems, described below in plain language.</p>
+    <p>In the 1980s and early 1990s, every utility that wanted to monitor equipment from a control room had to buy its master station and field devices from the same vendor — every manufacturer used its own private, undocumented protocol. That created three expensive real-world problems.</p>
 
     <div class="scenario">
-      <h4>Problem 1: Nothing could talk to anything else</h4>
-      <p>If a utility bought RTUs from one manufacturer and later wanted to switch SCADA software vendors, or add a different manufacturer's RTU to the same network, the two systems simply could not understand each other. A utility could end up locked into a single vendor for decades, paying whatever that vendor charged, because switching meant replacing every single field device.</p>
+      <div class="scenario-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4v5"/><path d="M15 3h5v5"/><path d="M9 21H4v-5"/><path d="M15 21h5v-5"/><line x1="4" y1="12" x2="9" y2="12" stroke-dasharray="2 2"/><line x1="15" y1="12" x2="20" y2="12" stroke-dasharray="2 2"/></svg>
+        <h4>Problem 1: Nothing could talk to anything else</h4>
+      </div>
+      <ul class="scan-list">
+        <li><b>Vendor lock-in was real:</b> buying RTUs from one manufacturer meant you were stuck with that vendor's SCADA software.</li>
+        <li><b>No shared language:</b> two different vendors' devices simply couldn't understand each other's proprietary protocol.</li>
+        <li><b>Switching costs were brutal:</b> changing vendors meant replacing every single field device, not just the software.</li>
+      </ul>
     </div>
 
     <div class="scenario">
-      <h4>Problem 2: The physical links were slow, noisy, and unreliable</h4>
-      <p>Utilities typically connect substations, well sites, and pump stations using low-bandwidth serial radio or leased telephone lines that stretch across remote, weather-exposed terrain. A protocol built for a clean office Ethernet network would constantly fail on a scratchy 9600-baud radio link with random bit errors. DNP3 was built from the ground up with a CRC checksum on nearly every chunk of data, and with confirmations and retries, specifically to survive that kind of noisy, unreliable environment.</p>
+      <div class="scenario-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffb84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        <h4>Problem 2: The physical links were slow, noisy, and unreliable</h4>
+      </div>
+      <ul class="scan-list">
+        <li><b>Built for bad connections:</b> substations and pump stations connect over slow, noisy serial radio or leased phone lines.</li>
+        <li><b>Office protocols failed here:</b> a protocol designed for clean Ethernet would break constantly on a scratchy 9600-baud radio link.</li>
+        <li><b>DNP3's fix:</b> a CRC checksum on nearly every chunk of data, plus confirmations and retries, built in from day one.</li>
+      </ul>
     </div>
 
     <div class="scenario">
-      <h4>Problem 3: Operators needed to know exactly when something happened, not just that it happened</h4>
-      <p>When a breaker trips during a storm, an operator investigating the fault afterward needs to know the precise sequence and timing of events across many devices, not just their final state. Older, simpler protocols mostly just reported current values when asked. DNP3 was designed around time-stamped event reporting and unsolicited responses, so a remote device can immediately push out "this changed, and here's exactly when" the moment it happens.</p>
+      <div class="scenario-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4f8cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+        <h4>Problem 3: Operators needed exact timing, not just final state</h4>
+      </div>
+      <ul class="scan-list">
+        <li><b>Timing matters after a fault:</b> operators need the precise sequence of events across many devices, not just what state things ended up in.</li>
+        <li><b>Old protocols only reported "now":</b> they answered when asked, and nothing more.</li>
+        <li><b>DNP3's fix:</b> time-stamped event reporting and unsolicited responses, so a device can push "this changed, and exactly when" the instant it happens.</li>
+      </ul>
     </div>
 
     <div class="scenario">
-      <h4>The real solution: one open, public, vendor-neutral standard</h4>
-      <p>In 1993, GE-Harris Canada (then called Westronic) took the partly-finished IEC 60870-5 specification, extended it to cover North American utility requirements, and released the result, DNP3, into the public domain for free instead of keeping it proprietary. Any manufacturer could implement it without paying a license fee, which is exactly why it spread rapidly across electric, water, and oil & gas utilities throughout the 1990s. The DNP Users Group was formed to maintain the specification, and in 2010 it was formally adopted as an international standard, IEEE 1815, with the current edition being IEEE 1815-2012.</p>
+      <div class="scenario-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <h4>The real solution: one open, public, vendor-neutral standard</h4>
+      </div>
+      <ul class="scan-list">
+        <li><b>1993:</b> GE-Harris Canada (then called Westronic) extended the partly-finished IEC 60870-5 spec into DNP3.</li>
+        <li><b>Released for free:</b> put into the public domain instead of kept proprietary, so any vendor could implement it without a license fee.</li>
+        <li><b>Rapid adoption:</b> spread rapidly across electric, water, and oil & gas utilities throughout the 1990s.</li>
+        <li><b>Standardized:</b> the DNP Users Group formed to maintain the spec; ratified as IEEE 1815 in 2010, current edition IEEE 1815-2012.</li>
+      </ul>
     </div>
 
     <div class="scenario">
-      <h4>Why it still needs updates today: cybersecurity</h4>
-      <p>DNP3 was designed in an era when the field devices it talked to were physically isolated on private serial links, so nobody designed in authentication — any message that looked correctly formatted was simply trusted and acted on. As utilities connected these same networks to corporate IT and the internet over the following decades, security researchers and real-world incidents showed that an attacker who could reach an outstation on the network could send it a forged Operate command and it would just execute it. That is the concrete, documented reason IEEE 1815-2012 added DNP3 Secure Authentication (SAv5), which requires a real cryptographic handshake before a critical command is accepted.</p>
+      <div class="scenario-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <h4>Why it still needs updates today: cybersecurity</h4>
+      </div>
+      <ul class="scan-list">
+        <li><b>No authentication by design:</b> DNP3 assumed devices were physically isolated, so any correctly-formatted message was simply trusted and acted on.</li>
+        <li><b>The internet changed that:</b> connecting these networks to corporate IT and the internet exposed a real gap.</li>
+        <li><b>Documented risk:</b> researchers showed an attacker who could reach an outstation could send a forged Operate command and it would just execute it.</li>
+        <li><b>The fix:</b> IEEE 1815-2012 added Secure Authentication (SAv5), requiring a real cryptographic handshake before critical commands are accepted.</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -526,31 +563,52 @@
 <section id="scenarios">
   <div class="card">
     <h2>Real-World Scenarios</h2>
-    <p style="color:var(--muted);font-size:13px;margin-top:-6px;">Concrete, industry-style situations showing how the terminology above is actually used in the field.</p>
+    <p style="color:var(--muted);margin-top:-6px;">Concrete, industry-style situations showing how the terminology above is actually used in the field.</p>
 
     <div class="scenario">
       <h4>1. Electric utility substation — breaker status and control</h4>
-      <p>A regional electric utility's control center runs a SCADA master polling 40 outstations located in substations across the service territory. Each substation RTU (such as a Schneider Electric SCADAPack or a GE D400) exposes its circuit breaker status as <b>Binary Input (Group 1) point index 3</b>. When a storm knocks out a line and the breaker trips open, the RTU immediately raises a <b>Binary Input Event (Group 2)</b> and sends an <b>unsolicited response</b> to the master over the substation's DNP3-over-TCP connection on <b>port 20000</b>, so the operator sees the trip on their screen within a second or two rather than waiting for the next poll. To restore the line, the operator's HMI issues a <b>Select (Function Code 3)</b> followed by an <b>Operate (Function Code 4)</b> against <b>Binary Output Command / CROB (Group 12)</b> point 3 — the two-step select-before-operate sequence exists specifically so a corrupted or spoofed single message can't close a breaker onto a live fault.</p>
+      <ul class="scan-list">
+        <li><b>Setup:</b> a regional utility's SCADA master polls 40 substation RTUs (e.g., Schneider Electric SCADAPack, GE D400).</li>
+        <li><b>Normal status:</b> breaker status is <b>Binary Input (Group 1)</b> point index 3.</li>
+        <li><b>When a storm hits:</b> the RTU raises a <b>Binary Input Event (Group 2)</b> and fires an <b>unsolicited response</b> over DNP3-over-TCP on <b>port 20000</b> — the operator sees it within a second or two.</li>
+        <li><b>Restoring power:</b> the HMI sends <b>Select (FC 3)</b> then <b>Operate (FC 4)</b> against <b>Binary Output Command / CROB (Group 12)</b> point 3.</li>
+        <li><b>Why two steps:</b> so a corrupted or spoofed single message can't close a breaker onto a live fault.</li>
+      </ul>
     </div>
 
     <div class="scenario">
       <h4>2. Water treatment plant — tank level monitoring</h4>
-      <p>A municipal water utility's outstation at a reservoir reports tank level as an <b>Analog Input (Group 30, Variation 1 — 32-bit with flag)</b> at point index 7. The outstation is configured with a <b>deadband</b> of 0.5%, meaning it only generates an event and reports a new value when the level changes by more than that amount, which keeps a slowly-filling tank from flooding the radio link with thousands of near-identical readings. Every night at 2:00 a.m., the master performs a full <b>Class 0 integrity poll</b> across every remote station to reconcile its database, a common real-world scheduling pattern precisely because it's outside daytime peak demand.</p>
+      <ul class="scan-list">
+        <li><b>The point:</b> tank level is reported as an <b>Analog Input (Group 30, Variation 1 — 32-bit with flag)</b> at point index 7.</li>
+        <li><b>Deadband set to 0.5%:</b> only reports a new event when the level actually moves that much, so a slow-filling tank doesn't flood the radio link with near-identical readings.</li>
+        <li><b>Nightly routine:</b> at 2:00 a.m. the master runs a full <b>Class 0 integrity poll</b> across every station — scheduled off-peak on purpose.</li>
+      </ul>
     </div>
 
     <div class="scenario">
       <h4>3. Oil & gas pipeline — leak detection and time sync</h4>
-      <p>Pipeline flow meters along a pipeline route report accumulated flow using the <b>Counter (Group 20)</b> object, incrementing continuously as product moves through the line. Because leak-detection calculations depend on comparing time-stamped readings from meters that may be over a hundred miles apart, the master periodically issues a <b>Write (Function Code 2)</b> request carrying a <b>Time and Date (Group 50, Variation 1)</b> object to correct clock drift in each outstation — a real operational necessity, since even a few seconds of clock skew between two flow meters can throw off a mass-balance leak calculation.</p>
+      <ul class="scan-list">
+        <li><b>The data:</b> pipeline flow meters report accumulated flow as a <b>Counter (Group 20)</b>, incrementing continuously.</li>
+        <li><b>The real risk:</b> leak-detection math compares timestamps from meters over a hundred miles apart — even a few seconds of clock drift can throw off the calculation.</li>
+        <li><b>The fix:</b> the master periodically writes a <b>Time and Date (Group 50, Variation 1)</b> object via <b>Write (FC 2)</b> to correct each outstation's clock.</li>
+      </ul>
     </div>
 
     <div class="scenario">
       <h4>4. Renewable energy — inverter setpoint control</h4>
-      <p>A utility-scale solar farm's plant controller acts as a DNP3 master issuing reactive power setpoints to inverter outstations to help regulate grid voltage, a real grid-code requirement in many interconnection agreements. The setpoint is written as an <b>Analog Output Command (Group 41, Variation 2 — 16-bit)</b> using <b>Direct Operate (Function Code 5)</b>, since the risk profile of adjusting a continuous setpoint is judged lower than switching a breaker, so the extra select-before-operate step is skipped in this application.</p>
+      <ul class="scan-list">
+        <li><b>The setup:</b> a solar farm's plant controller issues reactive power setpoints to inverter outstations to help regulate grid voltage — a real grid-code requirement.</li>
+        <li><b>How it's sent:</b> an <b>Analog Output Command (Group 41, Variation 2 — 16-bit)</b> via <b>Direct Operate (FC 5)</b>.</li>
+        <li><b>Why no Select step:</b> adjusting a continuous setpoint is judged lower-risk than switching a breaker, so the extra select-before-operate step is skipped.</li>
+      </ul>
     </div>
 
     <div class="scenario">
       <h4>5. Cybersecurity — why Secure Authentication exists</h4>
-      <p>In a 2015–2016 series of publicized grid attacks and numerous ICS security assessments since, researchers demonstrated that a standard, unauthenticated DNP3 outstation will execute a valid-looking <b>Direct Operate</b> command from any device on the network that can reach it — there's nothing in the base protocol checking who sent it. This real, documented weakness is exactly why IEEE 1815-2012 added <b>DNP3 Secure Authentication (SAv5)</b>, which requires a cryptographic challenge-response handshake using HMAC-SHA-256 before a master's critical control command will be accepted by the outstation.</p>
+      <ul class="scan-list">
+        <li><b>What was proven:</b> in 2015–2016 grid attacks and numerous ICS security assessments since, researchers showed a standard, unauthenticated outstation will execute a valid-looking <b>Direct Operate</b> command from anyone who can reach it — nothing checks who sent it.</li>
+        <li><b>The fix:</b> IEEE 1815-2012 added <b>DNP3 Secure Authentication (SAv5)</b>, requiring a cryptographic challenge-response handshake using HMAC-SHA-256 before a critical command is accepted.</li>
+      </ul>
     </div>
   </div>
 </section>

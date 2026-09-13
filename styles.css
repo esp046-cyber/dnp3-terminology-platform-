@@ -17,7 +17,12 @@
     background:radial-gradient(1200px 600px at 20% -10%, #16213d, var(--bg));
     color:var(--text);
     min-height:100vh;
+    font-size:16px;
   }
+  p{font-size:16px;line-height:1.6;margin:0 0 16px;color:#c7d2e6;}
+  ul,ol{font-size:16px;line-height:1.6;margin:0 0 16px;padding-left:22px;color:#c7d2e6;}
+  label{font-size:15px;line-height:1.6;}
+  h1,h2,h3,h4{font-weight:800;}
   header{
     padding:28px 32px 18px;
     border-bottom:1px solid var(--border);
@@ -34,7 +39,7 @@
     display:flex;align-items:center;justify-content:center;
     font-weight:800;color:#04120c;font-size:14px;
   }
-  header h1{margin:0;font-size:20px;letter-spacing:.3px;}
+  header h1{margin:0;font-size:24px;letter-spacing:.3px;font-weight:800;}
   header p{margin:2px 0 0;color:var(--muted);font-size:13px;}
   nav{
     display:flex;gap:6px;
@@ -72,10 +77,10 @@
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:14px;
-    padding:20px 22px;
-    margin-bottom:20px;
+    padding:26px 28px;
+    margin-bottom:24px;
   }
-  .card h2{margin-top:0;font-size:18px;display:flex;align-items:center;gap:8px;}
+  .card h2{margin-top:0;margin-bottom:14px;font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px;}
   .card h2 .tag{
     font-size:11px;background:var(--panel2);border:1px solid var(--border);
     padding:2px 8px;border-radius:20px;color:var(--muted);font-weight:400;
@@ -101,17 +106,17 @@
     border:1px solid var(--border);
     background:var(--panel2);
     border-radius:10px;
-    padding:14px 16px;
-    margin-bottom:10px;
+    padding:18px 20px;
+    margin-bottom:12px;
   }
   .term .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-  .term h3{margin:0;font-size:15px;color:var(--accent);}
+  .term h3{margin:0;font-size:18px;font-weight:800;color:var(--accent);}
   .term .cat{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:12px;}
-  .term p{margin:8px 0 0;font-size:13.5px;color:#c7d2e6;line-height:1.55;}
+  .term p{margin:10px 0 0;font-size:16px;color:#c7d2e6;line-height:1.6;}
   .term .example{
-    margin-top:8px;padding:9px 12px;background:rgba(79,140,255,.07);
+    margin-top:10px;padding:11px 14px;background:rgba(79,140,255,.07);
     border-left:3px solid var(--accent2);border-radius:6px;
-    font-size:13px;color:#aebedb;
+    font-size:15px;line-height:1.55;color:#aebedb;
   }
   .term .example b{color:var(--accent2);}
   .count{color:var(--muted);font-size:12.5px;margin-bottom:14px;}
@@ -164,14 +169,31 @@
 
   .note{
     background:rgba(255,184,79,.08);border:1px solid rgba(255,184,79,.35);
-    color:#ffd9a0;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:18px;
+    color:#ffd9a0;padding:16px 18px;border-radius:10px;font-size:15.5px;line-height:1.6;margin-bottom:20px;
   }
   .scenario{
     background:var(--panel2);border:1px solid var(--border);border-radius:10px;
-    padding:14px 16px;margin-bottom:12px;
+    padding:20px 22px;margin-bottom:16px;
   }
-  .scenario h4{margin:0 0 6px;font-size:14px;color:var(--accent2);}
-  .scenario p{margin:0;font-size:13.5px;color:#c7d2e6;line-height:1.55;}
+  .scenario h4{margin:0 0 10px;font-size:17px;font-weight:800;color:var(--accent2);}
+  .scenario p{margin:0 0 12px;font-size:16px;color:#c7d2e6;line-height:1.6;}
+  .scenario p:last-child{margin-bottom:0;}
+
+  .scenario-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .scenario-head svg{width:26px;height:26px;flex-shrink:0;}
+  .scenario-head h4{margin:0;}
+
+  .scan-list{list-style:none;margin:0;padding:0;}
+  .scan-list li{
+    position:relative;padding-left:26px;margin-bottom:12px;
+    font-size:16px;line-height:1.6;color:#c7d2e6;
+  }
+  .scan-list li:last-child{margin-bottom:0;}
+  .scan-list li::before{
+    content:"";position:absolute;left:0;top:8px;
+    width:9px;height:9px;border-radius:3px;background:var(--accent2);
+  }
+  .scan-list li b, .scan-list li strong{color:var(--text);}
   footer{text-align:center;color:var(--muted);font-size:12px;padding:24px;border-top:1px solid var(--border);}
 
   /* ---- Visuals ---- */
@@ -384,12 +406,11 @@
     header { padding: 20px 20px 15px; }
     nav { padding: 14px 20px; }
     main { padding: 20px 20px 60px; }
-    .card { padding: 16px; }
+    .card { padding: 20px; }
 
     header h1 { font-size: 22px; }
     header p { font-size: 14px; }
     nav button { font-size: 14.5px; }
-    p, .term p, .scenario p { font-size: 15px; line-height: 1.6; }
     .viz-caption { font-size: 14px; }
     .stat .lbl { font-size: 13px; }
   }
