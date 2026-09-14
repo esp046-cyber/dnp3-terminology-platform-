@@ -85,6 +85,36 @@
       <div class="qs-cta">Enter the Lab →</div>
     </div>
   </div>
+
+  <div class="card">
+    <h2>Scope & Limitations — What This Platform Does and Doesn't Cover</h2>
+    <p style="color:var(--muted);margin-top:-6px;">Being upfront about this: finishing everything here gets you roughly the practical 80% of day-to-day DNP3 work — but only a slice of the full IEEE 1815 engineering specification. Here's the honest breakdown.</p>
+    <div class="grid2">
+      <div class="scenario">
+        <div class="scenario-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <h4>What This Platform Covers (~80% Practical)</h4>
+        </div>
+        <ul class="scan-list">
+          <li><b>Data mapping:</b> you'll fully grasp Object Groups, Variations, and Point Indices.</li>
+          <li><b>Polling mechanisms:</b> how to configure Class 0 (Integrity) vs. Class 1/2/3 (Event) polling to balance bandwidth against timeliness.</li>
+          <li><b>Control sequences:</b> the mechanical difference between Direct Operate and Select-Before-Operate (SBO) for physical outputs.</li>
+          <li><b>Frame structure:</b> how to read the basic hex bytes (like the <code>05 64</code> start bytes) to verify traffic in a tool like Wireshark.</li>
+        </ul>
+      </div>
+      <div class="scenario">
+        <div class="scenario-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffb84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <h4>What This Platform Skips (~85% Deep Technical)</h4>
+        </div>
+        <ul class="scan-list">
+          <li><b>Device Profile documents:</b> real-world integration requires reading dense, vendor-specific Device Profiles (often XML) that dictate exactly which subset of DNP3 a specific PLC or RTU actually supports.</li>
+          <li><b>Network tuning:</b> application-layer fragment routing, specific TCP/UDP keep-alive timeouts, and advanced retry logic.</li>
+          <li><b>Key management:</b> Secure Authentication (SAv5) is introduced conceptually here, but not how to practically manage update keys or authority certificates on a live network.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- WHY DNP3 -->
@@ -654,6 +684,16 @@
       <ul class="scan-list">
         <li><b>What was proven:</b> in 2015–2016 grid attacks and numerous ICS security assessments since, researchers showed a standard, unauthenticated outstation will execute a valid-looking <b>Direct Operate</b> command from anyone who can reach it — nothing checks who sent it.</li>
         <li><b>The fix:</b> IEEE 1815-2012 added <b>DNP3 Secure Authentication (SAv5)</b>, requiring a cryptographic challenge-response handshake using HMAC-SHA-256 before a critical command is accepted.</li>
+      </ul>
+    </div>
+
+    <div class="scenario">
+      <h4>6. SCADA integration — applying this to a platform like AVEVA Wonderware</h4>
+      <ul class="scan-list">
+        <li><b>The general pattern:</b> commercial SCADA platforms (AVEVA/Wonderware among them) ship DNP3 master drivers or adapters that poll Class 0/1/2/3 data exactly the way this platform describes.</li>
+        <li><b>Configuring polling:</b> setting up a remote node means defining separate polling intervals for Class 0 (integrity) versus Class 1/2/3 (event) — the same distinction covered in the Standard Values tab.</li>
+        <li><b>Mapping tags:</b> HMI tags get bound to a DNP3 object group and point index — conceptually the same "Group : Index" addressing from Module 2 (e.g., an analog input might map to something like Group 30 / Index 5, a breaker control to Group 12 / Index 2).</li>
+        <li><b>A necessary caveat:</b> the exact driver names and item-reference string syntax vary by product and version and were <b>not independently verified</b> against current AVEVA documentation for this platform — always confirm the precise syntax in your specific product's manual before configuring a live system.</li>
       </ul>
     </div>
   </div>
